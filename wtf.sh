@@ -21,51 +21,6 @@ GIT_REPO="v17"
 GIT_BRANCH="main"
 REPO="https://raw.githubusercontent.com/${GIT_USER}/${GIT_REPO}/${GIT_BRANCH}/"
 
-# setup directories
-function SETUP_DIRECTORIES() {
-    mkdir -p /etc/xray /var/log/xray /var/lib/LT
-    curl -s ifconfig.me > /etc/xray/ipvps
-    chown www-data:www-data /var/log/xray
-    chmod +x /var/log/xray
-    touch /var/log/xray/access.log
-    touch /var/log/xray/error.log
-}
-
-SETUP_DIRECTORIES
-
-function pasang_domain() {
-clear
-echo -e "   \e[97;1m ===========================================\e[0m"
-echo -e "   \e[1;32m    Please Select a Domain bellow type.     \e[0m"
-echo -e "   \e[97;1m ===========================================\e[0m"
-echo -e "   \e[1;32m  1). \e[97;1m Domain Pribadi \e[0m"
-echo -e "   \e[1;32m  2). \e[97;1m Domain Random  \e[0m"
-echo -e "   \e[97;1m ===========================================\e[0m"
-echo -e ""
-read -p "   Just Input a number [1-2]:   " host
-echo ""
-if [[ $host == "1" ]]; then
-clear
-echo -e "   \e[97;1m ===========================================\e[0m"
-echo -e "   \e[97;1m             INPUT YOUR DOMAIN              \e[0m"
-echo -e "   \e[97;1m ===========================================\e[0m"
-echo -e ""
-read -p "   input your domain :   " host1
-echo "IP=" >> /var/lib/LT/ipvps.conf
-echo $host1 > /etc/xray/domain
-echo $host1 > /root/domain
-echo ""
-elif [[ $host == "2" ]]; then
-wget ${REPO}files/cf.sh && chmod +x cf.sh && ./cf.sh
-rm -f /root/cf.sh
-clear
-else
-print_install "Random Subdomain/Domain is Used"
-clear
-fi
-}
-pasang_domain
-
 # ==========================================
 # Fungsi Utama
 # ==========================================
@@ -97,6 +52,48 @@ VALIDITY_IPVPS() {
         exit 1
     fi
     PRINT_DONE "IP Detected: $MyIP_Vps"
+}
+
+# setup directories
+SETUP_DIRECTORIES() {
+    mkdir -p /etc/xray /var/log/xray /var/lib/LT
+    curl -s ifconfig.me > /etc/xray/ipvps
+    chown www-data:www-data /var/log/xray
+    chmod +x /var/log/xray
+    touch /var/log/xray/access.log
+    touch /var/log/xray/error.log
+}
+
+ADDED_DOMAINS() {
+clear
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e "   \e[1;32m    Please Select a Domain bellow type.     \e[0m"
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e "   \e[1;32m  1). \e[97;1m Domain Pribadi \e[0m"
+echo -e "   \e[1;32m  2). \e[97;1m Domain Random  \e[0m"
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e ""
+read -p "   Just Input a number [1-2]:   " host
+echo ""
+if [[ $host == "1" ]]; then
+clear
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e "   \e[97;1m             INPUT YOUR DOMAIN              \e[0m"
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e ""
+read -p "   input your domain :   " host1
+echo "IP=" >> /var/lib/LT/ipvps.conf
+echo $host1 > /etc/xray/domain
+echo $host1 > /root/domain
+echo ""
+elif [[ $host == "2" ]]; then
+wget ${REPO}files/cf.sh && chmod +x cf.sh && ./cf.sh
+rm -f /root/cf.sh
+clear
+else
+print_install "Random Subdomain/Domain is Used"
+clear
+fi
 }
 
 FETCH_USER_INFO() {
@@ -140,6 +137,8 @@ main() {
 
     CHECKING_ROOT_USER
     VALIDITY_IPVPS
+    SETUP_DIRECTORIES
+    ADDED_DOMAINS
     FETCH_USER_INFO
     CALCULATE_RAM_USAGE
 
