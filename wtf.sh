@@ -162,70 +162,153 @@ export OS_Name=$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/
 export Kernel=$( uname -r )
 export Arch=$( uname -m )
 export IP=$( curl -s https://ipinfo.io/ip/ )
-function first_setup(){
-timedatectl set-timezone Asia/Jakarta
-echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-print_success "Directory Xray"
-if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-echo "Setup Dependencies $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-sudo apt update -y
-apt-get install --no-install-recommends software-properties-common
-add-apt-repository ppa:vbernat/haproxy-2.0 -y
-apt-get -y install haproxy=2.0.\*
-elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-echo "Setup Dependencies For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-curl https://haproxy.debian.net/bernat.debian.org.gpg |
-gpg --dearmor >/usr/share/keyrings/haproxy.debian.net.gpg
-echo deb "[signed-by=/usr/share/keyrings/haproxy.debian.net.gpg]" \
-http://haproxy.debian.net buster-backports-1.8 main \
->/etc/apt/sources.list.d/haproxy.list
-sudo apt-get update
-apt-get -y install haproxy=1.8.\*
-else
-echo -e " Your OS Is Not Supported ($(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g') )"
-exit 1
-fi
+
+function first_setup() {
+    # Atur zona waktu
+    timedatectl set-timezone Asia/Jakarta
+
+    # Konfigurasi iptables-persistent
+    echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+    echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+
+    # Informasi sistem operasi
+    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
+
+    echo "Sistem Operasi terdeteksi: $OS $VERSION"
+
+    if [[ "$OS" == "ubuntu" ]]; then
+        echo "Setup Dependencies untuk Ubuntu $VERSION"
+        sudo apt update -y
+        apt-get install --no-install-recommends software-properties-common -y
+
+        if [[ "$VERSION" == "20.04" || "$VERSION" == "20.04.1" ]]; then
+            add-apt-repository ppa:vbernat/haproxy-2.0 -y
+            apt-get install haproxy=2.0.\* -y
+        elif [[ "$VERSION" == "22.04" ]]; then
+            add-apt-repository ppa:vbernat/haproxy-2.4 -y
+            apt-get install haproxy=2.4.\* -y
+        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.10" ]]; then
+            add-apt-repository ppa:vbernat/haproxy-2.9 -y
+            apt-get install haproxy=2.9.\* -y
+        else
+            echo "Versi Ubuntu $VERSION tidak didukung."
+            exit 1
+        fi
+
+    elif [[ "$OS" == "debian" ]]; then
+        echo "Setup Dependencies untuk Debian $VERSION"
+
+        # Tambahkan kunci GPG
+        curl https://haproxy.debian.net/bernat.debian.org.gpg | gpg --dearmor >/usr/share/keyrings/haproxy.debian.net.gpg
+
+        if [[ "$VERSION" == "10" ]]; then
+            echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net buster-backports-2.0 main" >/etc/apt/sources.list.d/haproxy.list
+            apt-get update
+            apt-get install haproxy=2.0.\* -y
+        elif [[ "$VERSION" == "11" ]]; then
+            echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net bullseye-backports-2.4 main" >/etc/apt/sources.list.d/haproxy.list
+            apt-get update
+            apt-get install haproxy=2.4.\* -y
+        elif [[ "$VERSION" == "12" ]]; then
+            echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net bookworm-backports-2.6 main" >/etc/apt/sources.list.d/haproxy.list
+            apt-get update
+            apt-get install haproxy=2.6.\* -y
+        else
+            echo "Versi Debian $VERSION tidak didukung."
+            exit 1
+        fi
+
+    else
+        echo "Sistem Operasi Anda ($OS $VERSION) tidak didukung."
+        exit 1
+    fi
+
+    echo "Instalasi selesai untuk $OS $VERSION."
 }
+
+
 clear
 function nginx_install() {
-if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-print_install "Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-sudo apt-get install nginx -y
-elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-print_success "Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-apt -y install nginx
-else
-echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${FONT} )"
-fi
+    # Deteksi OS dan Versi
+    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    PRETTY_NAME=$(grep -w PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')
+
+    echo "Setup nginx untuk OS: $PRETTY_NAME"
+
+    if [[ "$OS" == "ubuntu" ]]; then
+        sudo apt update -y
+        sudo apt install nginx -y
+        echo "nginx berhasil diinstal untuk $PRETTY_NAME"
+    elif [[ "$OS" == "debian" ]]; then
+        sudo apt update -y
+        sudo apt install nginx -y
+        echo "nginx berhasil diinstal untuk $PRETTY_NAME"
+    else
+        echo -e "OS Anda tidak didukung: $PRETTY_NAME"
+        exit 1
+    fi
+}
+
 }
 function base_package() {
-clear
-print_install "Menginstall Packet Yang Dibutuhkan"
-apt install zip pwgen openssl netcat socat cron bash-completion -y
-apt install figlet -y
-apt update -y
-apt upgrade -y
-apt dist-upgrade -y
-systemctl enable chronyd
-systemctl restart chronyd
-systemctl enable chrony
-systemctl restart chrony
-chronyc sourcestats -v
-chronyc tracking -v
-apt install ntpdate -y
-ntpdate pool.ntp.org
-apt install sudo -y
-sudo apt-get clean all
-sudo apt-get autoremove -y
-sudo apt-get install -y debconf-utils
-sudo apt-get remove --purge exim4 -y
-sudo apt-get remove --purge ufw firewalld -y
-sudo apt-get install -y --no-install-recommends software-properties-common
-echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
-echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-sudo apt-get install -y speedtest-cli vnstat libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev libcurl4-nss-dev flex bison make libnss3-tools libevent-dev bc rsyslog dos2unix zlib1g-dev libssl-dev libsqlite3-dev sed dirmngr libxml-parser-perl build-essential gcc g++ python htop lsof tar wget curl ruby zip unzip p7zip-full python3-pip libc6 util-linux build-essential msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent net-tools openssl ca-certificates gnupg gnupg2 ca-certificates lsb-release gcc shc make cmake git screen socat xz-utils apt-transport-https gnupg1 dnsutils cron bash-completion ntpdate chrony jq openvpn easy-rsa
-print_success "Packet Yang Dibutuhkan"
+# Fungsi untuk mengunduh konfigurasi
+download_dependencies() {
+    echo "Mengunduh konfigurasi untuk $OS $VERSION..."
+    wget "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
+
+    if [[ $? -eq 0 ]]; then
+        echo "Dependencies sukses di unduh.."
+    else
+        echo "Gagal mengunduh konfigurasi."
+        exit 1
+    fi
+}
+
+# Deteksi OS dan versinya
+if [[ -f /etc/os-release ]]; then
+    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    
+    if [[ "$OS" == "ubuntu" ]]; then
+        if [[ "$VERSION" == "20.04" ]]; then
+            CONFIG_PATH="dependencies/ubu20.sh"
+            bash ubu20.sh            
+        elif [[ "$VERSION" == "22.04" ]]; then
+            CONFIG_PATH="dependencies/ubu22.sh"
+            bash ubu22.sh            
+        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
+            CONFIG_PATH="dependencies/ubu24.sh"
+            bash ubu24.sh
+        else
+            echo "OS Ubuntu $VERSION tidak didukung."
+            exit 1
+        fi
+    elif [[ "$OS" == "debian" ]]; then
+        if [[ "$VERSION" == "10" ]]; then
+            CONFIG_PATH="dependencies/deb10.sh"
+            bash deb10.sh
+        elif [[ "$VERSION" == "11" ]]; then
+            CONFIG_PATH="dependencies/deb11.sh"
+            bash deb11.sh            
+        elif [[ "$VERSION" == "12" ]]; then
+            CONFIG_PATH="dependencies/deb12.sh"
+            bash deb12.sh            
+        else
+            echo "OS Debian $VERSION tidak didukung."
+            exit 1
+        fi
+    else
+        echo "Sistem Operasi tidak didukung: $OS $VERSION"
+        exit 1
+    fi
+else
+    echo "File /etc/os-release tidak ditemukan. Tidak dapat mendeteksi OS."
+    exit 1
+fi
+
+# Unduh file konfigurasi
+download_dependencies
 }
 clear
 function pasang_domain() {
@@ -240,9 +323,10 @@ echo -e "   ------------------------------------"
 read -p "   Please select numbers 1-2 or Any Button(Random) : " host
 echo ""
 if [[ $host == "1" ]]; then
-echo -e "   \e[1;32m_______________________________$NC"
-echo -e "   \e[1;36m     CHANGES DOMAIN $NC"
-echo -e "   \e[1;32m_______________________________$NC"
+clear
+echo -e "   ------------------------------------"
+echo -e "           CHANGES DOMAIN  "
+echo -e "   ------------------------------------"
 echo -e ""
 read -p "   input your domain :   " host1
 echo "IP=" >> /var/lib/LT/ipvps.conf
@@ -364,7 +448,71 @@ clear
 curl -s ipinfo.io/city >>/etc/xray/city
 curl -s ipinfo.io/org | cut -d " " -f 2-10 >>/etc/xray/isp
 print_install "Memasang Konfigurasi Packet"
-wget -O /etc/haproxy/haproxy.cfg "${REPO}cfg_conf_js/haproxy.cfg" >/dev/null 2>&1
+#wget -O /etc/haproxy/haproxy.cfg "${REPO}cfg_conf_js/haproxy.cfg" >/dev/null 2>&1
+
+# Fungsi untuk mengunduh konfigurasi
+download_config() {
+    echo "Mengunduh konfigurasi untuk $OS $VERSION..."
+    wget -O /etc/haproxy/haproxy.cfg "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
+
+    if [[ $? -eq 0 ]]; then
+        echo "Konfigurasi berhasil diunduh ke /etc/haproxy/haproxy.cfg"
+    else
+        echo "Gagal mengunduh konfigurasi."
+        exit 1
+    fi
+}
+
+# Deteksi OS dan versinya
+if [[ -f /etc/os-release ]]; then
+    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    
+    if [[ "$OS" == "ubuntu" ]]; then
+        if [[ "$VERSION" == "20.04" ]]; then
+            CONFIG_PATH="haproxy/ubu20/haproxy.cfg"
+        elif [[ "$VERSION" == "22.04" ]]; then
+            CONFIG_PATH="haproxy/ubu22/haproxy.cfg"
+        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
+            CONFIG_PATH="haproxy/ubu24/haproxy.cfg"
+        else
+            echo "OS Ubuntu $VERSION tidak didukung."
+            exit 1
+        fi
+    elif [[ "$OS" == "debian" ]]; then
+        if [[ "$VERSION" == "10" ]]; then
+            CONFIG_PATH="haproxy/deb10/haproxy.cfg"
+        elif [[ "$VERSION" == "11" ]]; then
+            CONFIG_PATH="haproxy/deb11/haproxy.cfg"
+        elif [[ "$VERSION" == "12" ]]; then
+            CONFIG_PATH="haproxy/deb12/haproxy.cfg"
+        else
+            echo "OS Debian $VERSION tidak didukung."
+            exit 1
+        fi
+    else
+        echo "Sistem Operasi tidak didukung: $OS $VERSION"
+        exit 1
+    fi
+else
+    echo "File /etc/os-release tidak ditemukan. Tidak dapat mendeteksi OS."
+    exit 1
+fi
+
+# Unduh file konfigurasi
+download_config
+
+# Restart HAProxy untuk menerapkan konfigurasi baru
+echo "Merestart layanan HAProxy..."
+systemctl restart haproxy
+
+if [[ $? -eq 0 ]]; then
+    echo "HAProxy berhasil dimulai ulang dengan konfigurasi baru."
+else
+    echo "Gagal memulai ulang HAProxy."
+    exit 1
+fi
+
 wget -O /etc/nginx/conf.d/xray.conf "${REPO}cfg_conf_js/xray.conf" >/dev/null 2>&1
 sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
 sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
