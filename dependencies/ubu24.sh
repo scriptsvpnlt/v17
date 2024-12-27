@@ -13,13 +13,13 @@ libp11-kit0 libpackagekit-glib2-18 libpam-systemd libproc2-0 libpython3-stdlib l
 libtiff6 libudev1 libudisks2-0 libuuid1 libzstd1 linux-headers-generic linux-headers-virtual linux-image-virtual linux-libc-dev linux-tools-common linux-virtual locales login logsave lvm2 lxd-agent-loader motd-news-config mount mtr-tiny nano needrestart
 netplan-generator netplan.io open-iscsi open-vm-tools openssh-client openssh-server openssh-sftp-server openssl overlayroot packagekit-tools packagekit passwd procps python-apt-common python3-apport python3-apt python3-distupgrade python3-minimal python3-netplan jq
 python3-problem-report python3-setuptools python3-software-properties python3-twisted python3-update-manager python3-urllib3 ubuntu-server ubuntu-standard udev udisks2 update-manager-core util-linux uuid-runtime vim-common vim-runtime vim-tiny vim xkb-data xxd xz-utils zlib1g zstd
-python3.12-minimal python3.12 python3 snapd software-properties-common sosreport ssh-import-id systemd-dev systemd-hwe-hwdb systemd-resolved systemd-sysv systemd-timesyncd systemd thin-provisioning-tools tmux ubuntu-minimal ubuntu-pro-client-l10n ubuntu-pro-client ubuntu-release-upgrader-core build-essential libssl-dev
+python3.12-minimal python3-distupgrade ubuntu-release-upgrader-core python3.12 python3 snapd software-properties-common sosreport ssh-import-id systemd-dev systemd-hwe-hwdb systemd-resolved systemd-sysv systemd-timesyncd systemd thin-provisioning-tools tmux ubuntu-minimal ubuntu-pro-client-l10n ubuntu-pro-client ubuntu-release-upgrader-core build-essential libssl-dev
 )
 
 # Instalasi paket berdasarkan OS
     sudo apt update -y
     sudo apt upgrade -y
-    sudo apt-geg install -y "${PACKAGES[@]}"
+    sudo apt-get install -y "${PACKAGES[@]}"
 sudo apt-get install -y --no-install-recommends software-properties-common
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
