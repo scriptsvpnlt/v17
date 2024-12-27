@@ -365,6 +365,7 @@ clear
 function pasang_ssl() {
 clear
 print_install "Memasang SSL Pada Domain"
+apt install socat
 rm -rf /etc/xray/xray.key
 rm -rf /etc/xray/xray.crt
 domain=$(cat /root/domain)
@@ -501,16 +502,8 @@ fi
 # Unduh file konfigurasi
 download_config
 
-# Restart HAProxy untuk menerapkan konfigurasi baru
-echo "Merestart layanan HAProxy..."
-systemctl restart haproxy
-
-if [[ $? -eq 0 ]]; then
     echo "HAProxy berhasil dimulai ulang dengan konfigurasi baru."
-else
-    echo "Gagal memulai ulang HAProxy."
-    exit 1
-fi
+
 
 wget -O /etc/nginx/conf.d/xray.conf "${REPO}cfg_conf_js/xray.conf" >/dev/null 2>&1
 sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
