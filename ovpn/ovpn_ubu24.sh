@@ -3,7 +3,7 @@
 clear
 echo -e "\e[32m Install OpenVpn \e[0m"
 apt update
-apt install -y openvpn
+apt install openvpn -y
 
 export DEBIAN_FRONTEND=noninteractive
 # Deteksi Versi OS
