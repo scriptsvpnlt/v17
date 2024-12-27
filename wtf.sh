@@ -250,7 +250,6 @@ function nginx_install() {
     fi
 }
 
-}
 function base_package() {
 # Fungsi untuk mengunduh konfigurasi
 download_dependencies() {
