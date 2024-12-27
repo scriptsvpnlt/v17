@@ -264,15 +264,15 @@ if [[ -f /etc/os-release ]]; then
     VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
     
     if [[ "$OS" == "ubuntu" ]]; then
-        if [[ "$VERSION" == "20.04" ]]; then
+        if [[ "$VERSION" == "20.04" || "$VERSION" == "20.04.1" || "$VERSION" == "20.04.6" ]]; then
             CONFIG_PATH="dependencies/ubu20.sh"
-            bash ubu20.sh            
-        elif [[ "$VERSION" == "22.04" ]]; then
+            chmod +x ubu20.sh ./ubu20.sh            
+        elif [[ "$VERSION" == "22.04" || "$VERSION" == "22.04.1" || "$VERSION" == "22.04.6" ]]; then
             CONFIG_PATH="dependencies/ubu22.sh"
-            bash ubu22.sh            
+            chmod +x ubu22.sh ./ubu22.sh          
         elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
             CONFIG_PATH="dependencies/ubu24.sh"
-            bash ubu24.sh
+            chmod +x ubu24.sh ./ubu24.sh
         else
             echo "OS Ubuntu $VERSION tidak didukung."
             exit 1
@@ -360,6 +360,7 @@ function pasang_ssl() {
 clear
 print_install "Memasang SSL Pada Domain"
 apt install socat
+apt install nginx -y
 rm -rf /etc/xray/xray.key
 rm -rf /etc/xray/xray.crt
 domain=$(cat /root/domain)
@@ -462,7 +463,7 @@ curl -s ipinfo.io/city >/etc/xray/city
 curl -s ipinfo.io/org | cut -d " " -f 2-10 >/etc/xray/isp
 
 # Cetak pesan instalasi paket selesai
-print_install "Memasang Konfigurasi Packet"
+print_install "Memasang haproxy.cfg"
 
 #wget -O /etc/haproxy/haproxy.cfg "${REPO}cfg_conf_js/haproxy.cfg" >/dev/null 2>&1
 
@@ -472,9 +473,9 @@ download_config() {
     wget -O /etc/haproxy/haproxy.cfg "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
 
     if [[ $? -eq 0 ]]; then
-        echo "Konfigurasi berhasil diunduh ke /etc/haproxy/haproxy.cfg"
+        echo -e "\e[36;1m Haproxy berhasil diunduh \e[0m"
     else
-        echo "Gagal mengunduh konfigurasi."
+        echo -e "\e[31;1m Gagal mengunduh haproxy.\e[0m"
         exit 1
     fi
 }
@@ -518,7 +519,8 @@ fi
 # Unduh file konfigurasi
 download_config
 
-    echo "HAProxy berhasil dimulai ulang dengan konfigurasi baru."
+    clear
+    echo -e "\e[36;1m HAProxy berhasil dimulai ulang dengan konfigurasi baru.\e[0m"
 
 
 wget -O /etc/nginx/conf.d/xray.conf "${REPO}cfg_conf_js/xray.conf" >/dev/null 2>&1
@@ -572,6 +574,10 @@ debconf-set-selections <<<"keyboard-configuration keyboard-configuration/variant
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/variant select English"
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/xkb-keymap select "
 cd
+cat > /etc/rc.local <<-END
+exit 0
+END
+chmod +x /etc/rc.local
 cat > /etc/systemd/system/rc-local.service <<-END
 [Unit]
 Description=/etc/rc.local
@@ -586,10 +592,6 @@ SysVStartPriority=99
 [Install]
 WantedBy=multi-user.target
 END
-cat > /etc/rc.local <<-END
-exit 0
-END
-chmod +x /etc/rc.local
 systemctl enable rc-local
 systemctl start rc-local.service
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
@@ -671,14 +673,6 @@ systemctl enable udp-mini-3
 systemctl start udp-mini-3
 print_success "files Quota Service"
 }
-function ssh_slow(){
-clear
-print_install "Memasang modul SlowDNS Server"
-wget -q -O /tmp/nameserver "${REPO}files/nameserver" >/dev/null 2>&1
-chmod +x /tmp/nameserver
-bash /tmp/nameserver | tee /root/install.log
-print_success "SlowDNS"
-}
 clear
 function ins_SSHD(){
 clear
@@ -694,8 +688,8 @@ clear
 function ins_dropbear(){
 clear
 print_install "Menginstall Dropbear"
-apt-get install dropbear -y > /dev/null 2>&1
-wget -q -O /etc/default/dropbear "${REPO}cfg_conf_js/dropbear.conf"
+apt-get install dropbear -y
+wget -q -O /etc/default/dropbear "${REPO}cfg_conf_js/dropbear.conf"  >/dev/null 2>&1
 chmod +x /etc/default/dropbear
 /etc/init.d/dropbear restart
 /etc/init.d/dropbear status
@@ -705,9 +699,9 @@ clear
 function ins_vnstat(){
 clear
 print_install "Menginstall Vnstat"
-apt -y install vnstat > /dev/null 2>&1
+apt -y install vnstat
 /etc/init.d/vnstat restart
-apt -y install libsqlite3-dev > /dev/null 2>&1
+apt -y install libsqlite3-dev
 wget https://humdi.net/vnstat/vnstat-2.6.tar.gz
 tar zxvf vnstat-2.6.tar.gz
 cd vnstat-2.6
@@ -725,7 +719,7 @@ print_success "Vnstat"
 }
 function ins_openvpn(){
 clear
-
+apt install openvpn -y
 download_config() {
     echo "Mengunduh konfigurasi untuk $OS $VERSION..."
     wget "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
@@ -744,16 +738,18 @@ if [[ -f /etc/os-release ]]; then
     VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
     
     if [[ "$OS" == "ubuntu" ]]; then
-        if [[ "$VERSION" == "20.04" ]]; then
+        if [[ "$VERSION" == "20.04" || "$VERSION" == "20.04.1" || "$VERSION" == "20.04.6" ]]; then
             CONFIG_PATH="ovpn/openvpn"
-            bash openvpn
+            chmod +x openvpn && ./openvpn
             etc/init.d/openvpn restart
         elif [[ "$VERSION" == "22.04" ]]; then
             CONFIG_PATH="ovpn/ovpn_ubu24.sh"
             bash ovpn_ubu24.sh
+            systemctl restart openvpn
         elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
             CONFIG_PATH="ovpn/ovpn_ubu24.sh"
             bash ovpn_ubu24.sh
+            systemctl restart openvpn
         else
             echo "OS Ubuntu $VERSION tidak didukung."
             exit 1
@@ -761,7 +757,7 @@ if [[ -f /etc/os-release ]]; then
     elif [[ "$OS" == "debian" ]]; then
         if [[ "$VERSION" == "10" ]]; then
             CONFIG_PATH="ovpn/openvpn"
-            bash openvpn
+            chmod +x openvpn && ./openvpn
             etc/init.d/openvpn restart
         elif [[ "$VERSION" == "11" ]]; then
             CONFIG_PATH="ovpn/openvpn"
@@ -795,7 +791,7 @@ clear
 print_install "Memasang Backup Server"
 apt install rclone -y
 printf "q\n" | rclone config
-wget -O /root/.config/rclone/rclone.conf "${REPO}cfg_conf_js/rclone.conf"
+wget -O /root/.config/rclone/rclone.conf "${REPO}cfg_conf_js/rclone.conf" >/dev/null 2>&1
 cd /bin
 git clone  https://github.com/LunaticTunnel/wondershaper.git
 cd wondershaper
@@ -854,7 +850,7 @@ fi
 clear
 echo "Banner /etc/banner.txt" >>/etc/ssh/sshd_config
 sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/banner.txt"@g' /etc/default/dropbear
-wget -O /etc/banner.txt "${REPO}banner/issue.net"
+wget -O /etc/banner.txt "${REPO}banner/issue.net" >/dev/null 2>&1
 print_success "Fail2ban"
 }
 function ins_epro(){
@@ -977,14 +973,7 @@ cat >/home/daily_reboot <<-END
 5
 END
 
-cat >/etc/rc.local <<EOF
-iptables -I INPUT -p udp --dport 5300 -j ACCEPT
-iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
-systemctl restart netfilter-persistent
-exit 0
-EOF
 
-chmod +x /etc/rc.local
 
 cat >/etc/systemd/system/rc-local.service <<EOF
 [Unit]
@@ -1000,6 +989,15 @@ SysVStartPriority=99
 [Install]
 WantedBy=multi-user.target
 EOF
+
+cat >/etc/rc.local <<EOF
+iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
+systemctl restart netfilter-persistent
+exit 0
+EOF
+
+chmod +x /etc/rc.local
 echo "/bin/false" >>/etc/shells
 echo "/usr/sbin/nologin" >>/etc/shells
 
@@ -1029,7 +1027,6 @@ systemctl restart nginx
 systemctl restart xray
 systemctl restart cron
 systemctl restart haproxy
-systemctl restart openvpn
 systemctl restart ssh
 systemctl restart ws
 systemctl restart atd
@@ -1039,7 +1036,6 @@ clear
 function instal(){
 clear
 install_haproxy
-nginx_install
 base_package
 make_folder_xray
 pasang_domain
