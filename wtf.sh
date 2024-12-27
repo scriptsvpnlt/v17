@@ -725,10 +725,70 @@ print_success "Vnstat"
 }
 function ins_openvpn(){
 clear
-print_install "Menginstall OpenVPN"
-wget ${REPO}files/openvpn &&  chmod +x openvpn && ./openvpn
-/etc/init.d/openvpn restart
-print_success "OpenVPN"
+
+download_config() {
+    echo "Mengunduh konfigurasi untuk $OS $VERSION..."
+    wget "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
+
+    if [[ $? -eq 0 ]]; then
+        echo -e "\033[36;1m OpenVPN berhasil diunduh \033[0m"
+    else
+        echo -e "\033[31;1m Gagal mengunduh OpenVPN \033[0m"
+        exit 1
+    fi
+}
+
+# Deteksi OS dan versinya
+if [[ -f /etc/os-release ]]; then
+    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    
+    if [[ "$OS" == "ubuntu" ]]; then
+        if [[ "$VERSION" == "20.04" ]]; then
+            CONFIG_PATH="ovpn/openvpn"
+            bash openvpn
+            etc/init.d/openvpn restart
+        elif [[ "$VERSION" == "22.04" ]]; then
+            CONFIG_PATH="ovpn/ovpn_ubu24.sh"
+            bash ovpn_ubu24.sh
+        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
+            CONFIG_PATH="ovpn/ovpn_ubu24.sh"
+            bash ovpn_ubu24.sh
+        else
+            echo "OS Ubuntu $VERSION tidak didukung."
+            exit 1
+        fi
+    elif [[ "$OS" == "debian" ]]; then
+        if [[ "$VERSION" == "10" ]]; then
+            CONFIG_PATH="ovpn/openvpn"
+            bash openvpn
+            etc/init.d/openvpn restart
+        elif [[ "$VERSION" == "11" ]]; then
+            CONFIG_PATH="ovpn/openvpn"
+            bash openvpn
+        elif [[ "$VERSION" == "12" ]]; then
+            CONFIG_PATH="ovpn/openvpn"
+            bash openvpn
+        else
+            echo "OS Debian $VERSION tidak didukung."
+            exit 1
+        fi
+    else
+        echo "Sistem Operasi tidak didukung: $OS $VERSION"
+        exit 1
+    fi
+else
+    echo "File /etc/os-release tidak ditemukan. Tidak dapat mendeteksi OS."
+    exit 1
+fi
+
+# Unduh file konfigurasi
+download_config
+
+#print_install "Menginstall OpenVPN"
+#wget ${REPO}files/openvpn &&  chmod +x openvpn && ./openvpn
+#/etc/init.d/openvpn restart
+#print_success "OpenVPN"
 }
 function ins_backup(){
 clear
@@ -916,6 +976,16 @@ service cron restart
 cat >/home/daily_reboot <<-END
 5
 END
+
+cat >/etc/rc.local <<EOF
+iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
+systemctl restart netfilter-persistent
+exit 0
+EOF
+
+chmod +x /etc/rc.local
+
 cat >/etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
@@ -932,13 +1002,7 @@ WantedBy=multi-user.target
 EOF
 echo "/bin/false" >>/etc/shells
 echo "/usr/sbin/nologin" >>/etc/shells
-cat >/etc/rc.local <<EOF
-iptables -I INPUT -p udp --dport 5300 -j ACCEPT
-iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
-systemctl restart netfilter-persistent
-exit 0
-EOF
-chmod +x /etc/rc.local
+
 AUTOREB=$(cat /home/daily_reboot)
 SETT=11
 if [ $AUTOREB -gt $SETT ]; then
@@ -950,16 +1014,25 @@ print_success "Menu Packet"
 }
 function enable_services(){
 clear
+
+echo -e "\e[36;1minstall kill triall \e[0m"
+apt -y install at
+clear
 print_install "Enable Service"
 systemctl daemon-reload
 systemctl start netfilter-persistent
 systemctl enable --now rc-local
 systemctl enable --now cron
 systemctl enable --now netfilter-persistent
+systemctl restart rc-local
 systemctl restart nginx
 systemctl restart xray
 systemctl restart cron
 systemctl restart haproxy
+systemctl restart openvpn
+systemctl restart ssh
+systemctl restart ws
+systemctl restart atd
 print_success "Enable Service"
 clear
 }
@@ -1001,7 +1074,7 @@ rm -rf /root/README.md
 rm -rf /root/domain
 secs_to_human "$(($(date +%s) - ${start}))"
 sudo hostnamectl set-hostname $username
-echo -e "${green} install sukses ${NC}👍"
+echo -e "${green} install sukses ${NC}"
 sleep 2
 echo ""
 read -p "$( echo -e "Press ${YELLOW}[ ${NC}${YELLOW}Enter${NC} ${YELLOW}]${NC} TO REBOOT") "
