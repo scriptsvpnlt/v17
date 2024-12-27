@@ -227,11 +227,6 @@ function INSTALL_DOMAIN() {
         echo -e ""
         read -p "   Masukkan domain Anda: " host1
 
-        if [[ -z "$host1" ]]; then
-            echo -e "${RED}Domain tidak boleh kosong!${Softex}"
-            exit 1
-        fi
-
         echo "IP=" > /var/lib/LT/ipvps.conf
         echo "$host1" > /etc/xray/domain
         echo "$host1" > /root/domain
