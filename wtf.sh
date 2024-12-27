@@ -1,5 +1,7 @@
 #!/bin/bash
 
+clear
+
 # ==========================================
 # Variabel Global
 # ==========================================
@@ -16,39 +18,53 @@ DATE=$(date +'%Y-%m-%d')
 # github Repository
 GIT_USER="scriptsvpnlt"
 GIT_REPO="v17"
-GIT_BRANCH="main/"
-REPO="https://raw.githubusercontent.com/${GIT_USER}/${GIT_REPO}/${GIT_BRANCH}"
-    clear
-    echo -e "   .--------------------------------------------."
-    echo -e "   | \e[1;32mSilakan Pilih Jenis Domain Di Bawah Ini \e[0m|"
-    echo -e "   '--------------------------------------------'"
-    echo -e "     \e[1;32m1)\e[0m Domain Pribadi"
-    echo -e "     \e[1;32m2)\e[0m Random Domain"
-    echo -e "   ------------------------------------"
-    read -p "   Pilih angka 1-2 untuk type domain: " SELECT_CHOICE
-    if [[ $SELECT_CHOICE == "1" ]]; then
-    clear
-    echo -e "${CY}========================================${Softex}"
-    echo -e "\033[41;97;1m            ADDON DOMAIN VPS           \033[0m"
-    echo -e "${CY}========================================${Softex}"
-        echo -e ""
-        read -p "   Masukkan domain Anda: " host1
-        
-        echo "IP=" > /var/lib/LT/ipvps.conf
-        echo "$host1" > /etc/xray/domain
-        echo "$host1" > /root/domain
+GIT_BRANCH="main"
+REPO="https://raw.githubusercontent.com/${GIT_USER}/${GIT_REPO}/${GIT_BRANCH}/"
 
-    elif [[ $SELECT_CHOICE == "2" ]]; then
-        echo -e "${CY}Menggunakan Random Domain...${Softex}"
-        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
-        rm -f /root/cf.sh
-        clear
-    else
-        echo -e "${RED}Input tidak valid, Random Domain akan digunakan.${Softex}"
-        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
-        rm -f /root/cf.sh
-        clear
-    fi
+# setup directories
+function SETUP_DIRECTORIES() {
+    mkdir -p /etc/xray /var/log/xray /var/lib/LT
+    curl -s ifconfig.me > /etc/xray/ipvps
+    chown www-data:www-data /var/log/xray
+    chmod +x /var/log/xray
+    touch /var/log/xray/access.log
+    touch /var/log/xray/error.log
+}
+
+SETUP_DIRECTORIES
+
+function pasang_domain() {
+clear
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e "   \e[1;32m    Please Select a Domain bellow type.     \e[0m"
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e "   \e[1;32m  1). \e[97;1m Domain Pribadi \e[0m"
+echo -e "   \e[1;32m  2). \e[97;1m Domain Random  \e[0m"
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e ""
+read -p "   Just Input a number [1-2]:   " host
+echo ""
+if [[ $host == "1" ]]; then
+clear
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e "   \e[97;1m             INPUT YOUR DOMAIN              \e[0m"
+echo -e "   \e[97;1m ===========================================\e[0m"
+echo -e ""
+read -p "   input your domain :   " host1
+echo "IP=" >> /var/lib/LT/ipvps.conf
+echo $host1 > /etc/xray/domain
+echo $host1 > /root/domain
+echo ""
+elif [[ $host == "2" ]]; then
+wget ${REPO}files/cf.sh && chmod +x cf.sh && ./cf.sh
+rm -f /root/cf.sh
+clear
+else
+print_install "Random Subdomain/Domain is Used"
+clear
+fi
+}
+pasang_domain
 
 # ==========================================
 # Fungsi Utama
@@ -81,17 +97,6 @@ VALIDITY_IPVPS() {
         exit 1
     fi
     PRINT_DONE "IP Detected: $MyIP_Vps"
-}
-
-SETUP_DIRECTORIES() {
-    PRINTF_INSTALL "Setting up directories and permissions"
-    mkdir -p /etc/xray /var/log/xray /var/lib/LT
-    curl -s ifconfig.me > /etc/xray/ipvps
-    chown www-data:www-data /var/log/xray
-    chmod +x /var/log/xray
-    touch /var/log/xray/access.log
-    touch /var/log/xray/error.log
-    PRINT_DONE "Directories and permissions set up successfully"
 }
 
 FETCH_USER_INFO() {
@@ -135,7 +140,6 @@ main() {
 
     CHECKING_ROOT_USER
     VALIDITY_IPVPS
-    SETUP_DIRECTORIES
     FETCH_USER_INFO
     CALCULATE_RAM_USAGE
 
