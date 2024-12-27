@@ -13,6 +13,12 @@ ERROR="${RED}[EROR]${Softex}"
 MyIP_Vps=$(curl -sS ipv4.icanhazip.com)
 DATE=$(date +'%Y-%m-%d')
 
+# github Repository
+GIT_USER="scriptsvpnlt"
+GIT_REPO="v17"
+GIT_BRANCH="main/"
+REPO="https://raw.githubusercontent.com/${GIT_USER}/${GIT_REPO}/${GIT_BRANCH}"
+
 # ==========================================
 # Fungsi Utama
 # ==========================================
@@ -25,9 +31,9 @@ PRINT_FAILURE() {
 }
 
 PRINTF_INSTALL() {
-    echo -e "${GRN}=================================${Softex}"
+    echo -e "${GRN}===========================================${Softex}"
     echo -e "${CY}# $1 ${Softex}"
-    echo -e "${GRN}=================================${Softex}"
+    echo -e "${GRN}===========================================${Softex}"
     sleep 1
 }
 
@@ -60,8 +66,8 @@ SETUP_DIRECTORIES() {
 
 FETCH_USER_INFO() {
     PRINTF_INSTALL "Fetching user information"
-    username=$(curl -s https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep $MyIP_Vps | awk '{print $2}')
-    expx=$(curl -s https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep $MyIP_Vps | awk '{print $3}')
+    username=$(curl -s https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $MyIP_Vps | awk '{print $2}')
+    expx=$(curl -s https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $MyIP_Vps | awk '{print $3}')
     if [[ -z "$username" || -z "$expx" ]]; then
         PRINT_FAILURE "User information not found for IP: $MyIP_Vps"
         exit 1
@@ -246,8 +252,8 @@ function INSTALL_DOMAIN() {
 
 function SEND_NOTIF() {
     # Mendapatkan informasi dari server
-    USRSC=$(wget -qO- https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep "$MyIP_Vps" | awk '{print $2}')
-    EXPSC=$(wget -qO- https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep "$MyIP_Vps" | awk '{print $3}')
+    USRSC=$(wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep "$MyIP_Vps" | awk '{print $2}')
+    EXPSC=$(wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep "$MyIP_Vps" | awk '{print $3}')
     TIMEZONE=$(date '+%H:%M:%S')
 
     # Memastikan variabel domain tidak kosong
