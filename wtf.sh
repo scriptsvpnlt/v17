@@ -3,7 +3,7 @@
 
 apt upgrade -y
 apt update -y
-apt install curls
+apt install curl -y
 apt install wondershaper -y
 Green="\e[92;1m"
 RED="\033[1;31m"
@@ -21,8 +21,8 @@ green='\e[0;32m'
 TIME=$(date '+%d %b %Y')
 ipsaya=$(wget -qO- ipinfo.io/ip)
 TIMES="10"
-CHATID="6617783693"
-KEY="6751589620:AAHwjP6dzZhuqeyUOdYFc6742Q1YUVF1EjM"
+CHATID="5970831071"
+KEY="8112280842:AAEdvGEy7767zQ0_x1q0pXdNpSb_8BEjRCI"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
 MYIP=$(curl -sS ipv4.icanhazip.com)
 clear
