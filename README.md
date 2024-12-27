@@ -5,8 +5,7 @@
 <pre><code>apt update && apt upgrade -y && update-grub && sleep 2 && reboot</pre></code>
 
 ### INSTALL SCRIPT 
-<pre><code>apt update -y && apt upgrade -y && apt install -y lolcat && gem install lolcat && \
-wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/v17/main/wtf.sh | bash
+<pre><code>wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/v17/main/wtf.sh | bash
 </code></pre>
 
 
