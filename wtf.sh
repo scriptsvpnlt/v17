@@ -1,346 +1,267 @@
-# Decrypted by LT | FUSCATOR
-# Github- https://github.com/LunaticTunnel/Absurd
+#!/bin/bash
 
-apt upgrade -y
-apt update -y
-apt install curl -y
-apt install wondershaper -y
-Green="\e[92;1m"
+# ==========================================
+# Variabel Global
+# ==========================================
+GRN="\e[92;1m"
 RED="\033[1;31m"
-YELLOW="\033[33m"
+CY="\033[36;1m"
 BLUE="\033[36m"
-FONT="\033[0m"
-GREENBG="\033[42;37m"
-REDBG="\033[41;37m"
-OK="${Green}--->${FONT}"
-ERROR="${RED}[ERROR]${FONT}"
-GRAY="\e[1;30m"
-NC='\e[0m'
-red='\e[1;31m'
-green='\e[0;32m'
-TIME=$(date '+%d %b %Y')
-ipsaya=$(wget -qO- ipinfo.io/ip)
-TIMES="10"
-CHATID="5970831071"
-KEY="8112280842:AAEdvGEy7767zQ0_x1q0pXdNpSb_8BEjRCI"
-URL="https://api.telegram.org/bot$KEY/sendMessage"
-MYIP=$(curl -sS ipv4.icanhazip.com)
-clear
-export IP=$( curl -sS icanhazip.com )
-clear
-clear && clear && clear
-clear;clear;clear
-echo ""
-sleep 3
-clear
-if [[ $( uname -m | awk '{print $1}' ) == "x86_64" ]]; then
-echo -e "${OK} Your Architecture Is Supported ( ${green}$( uname -m )${NC} )"
-else
-echo -e "${EROR} Your Architecture Is Not Supported ( ${YELLOW}$( uname -m )${NC} )"
-exit 1
-fi
-if [[ $( cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' ) == "ubuntu" ]]; then
-echo -e "${OK} Your OS Is Supported ( ${green}$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g' )${NC} )"
-elif [[ $( cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' ) == "debian" ]]; then
-echo -e "${OK} Your OS Is Supported ( ${green}$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g' )${NC} )"
-else
-echo -e "${EROR} Your OS Is Not Supported ( ${YELLOW}$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g' )${NC} )"
-exit 1
-fi
-if [[ $ipsaya == "" ]]; then
-echo -e "${EROR} IP Address ( ${RED}Not Detected${NC} )"
-else
-echo -e "${OK} IP Address ( ${green}$MYIP${NC} )"
-fi
-echo ""
-read -p "$( echo -e "Press ${GRAY}[ ${NC}${green}Enter${NC} ${GRAY}]${NC} For Starting Installation") "
-echo ""
-clear
-if [ "${EUID}" -ne 0 ]; then
-echo "You need to run this script as root"
-exit 1
-fi
-if [ "$(systemd-detect-virt)" == "openvz" ]; then
-echo "OpenVZ is not supported"
-exit 1
-fi
-red='\e[1;31m'
-green='\e[0;32m'
-NC='\e[0m'
-MYIP=$(curl -sS ipv4.icanhazip.com)
-echo -e "\e[32mloading...\e[0m"
-clear
-MYIP=$(curl -sS ipv4.icanhazip.com)
-echo -e "\e[32mloading...\e[0m"
-clear
-clear
-rm -f /usr/bin/user
-username=$(curl https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $MYIP | awk '{print $2}')
-echo "$username" >/usr/bin/user
-expx=$(curl https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $MYIP | awk '{print $3}')
-echo "$expx" >/usr/bin/e
-username=$(cat /usr/bin/user)
-oid=$(cat /usr/bin/ver)
-exp=$(cat /usr/bin/e)
-clear
-d1=$(date -d "$valid" +%s)
-d2=$(date -d "$today" +%s)
-certifacate=$(((d1 - d2) / 86400))
+Softex="\033[0m"
+OK="${GRN}[NICE]${Softex}"
+ERROR="${RED}[EROR]${Softex}"
+MyIP_Vps=$(curl -sS ipv4.icanhazip.com)
 DATE=$(date +'%Y-%m-%d')
-datediff() {
-d1=$(date -d "$1" +%s)
-d2=$(date -d "$2" +%s)
-echo -e "$COLOR1 $NC Expiry In   : $(( (d1 - d2) / 86400 )) Days"
-}
-mai="datediff "$Exp" "$DATE""
-Info="(${green}Active${NC})"
-Error="(${RED}ExpiRED${NC})"
-today=`date -d "0 days" +"%Y-%m-%d"`
-Exp1=$(curl https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $MYIP | awk '{print $4}')
-if [[ $today < $Exp1 ]]; then
-sts="${Info}"
-else
-sts="${Error}"
-fi
-echo -e "\e[32mloading...\e[0m"
-clear
-REPO="https://raw.githubusercontent.com/scriptsvpnlt/v17/main/"
-start=$(date +%s)
-secs_to_human() {
-echo "Installation time : $((${1} / 3600)) hours $(((${1} / 60) % 60)) minute's $((${1} % 60)) seconds"
-}
-function print_ok() {
-echo -e "${OK} ${BLUE} $1 ${FONT}"
-}
-function print_install() {
-echo -e "${green} =============================== ${FONT}"
-echo -e "${YELLOW} # $1 ${FONT}"
-echo -e "${green} =============================== ${FONT}"
-sleep 1
-}
-function print_error() {
-echo -e "${ERROR} ${REDBG} $1 ${FONT}"
-}
-function print_success() {
-if [[ 0 -eq $? ]]; then
-echo -e "${green} =============================== ${FONT}"
-echo -e "${Green} # $1 berhasil dipasang"
-echo -e "${green} =============================== ${FONT}"
-sleep 2
-fi
-}
-function is_root() {
-if [[ 0 == "$UID" ]]; then
-print_ok "Root user Start installation process"
-else
-print_error "The current user is not the root user, please switch to the root user and run the script again"
-fi
-}
-print_install "Membuat direktori xray"
-mkdir -p /etc/xray
-curl -s ifconfig.me > /etc/xray/ipvps
-touch /etc/xray/domain
-mkdir -p /var/log/xray
-chown www-data.www-data /var/log/xray
-chmod +x /var/log/xray
-touch /var/log/xray/access.log
-touch /var/log/xray/error.log
-mkdir -p /var/lib/LT >/dev/null 2>&1
-while IFS=":" read -r a b; do
-case $a in
-"MemTotal") ((mem_used+=${b/kB})); mem_total="${b/kB}" ;;
-"Shmem") ((mem_used+=${b/kB}))  ;;
-"MemFree" | "Buffers" | "Cached" | "SReclaimable")
-mem_used="$((mem_used-=${b/kB}))"
-;;
-esac
-done < /proc/meminfo
-Ram_Usage="$((mem_used / 1024))"
-Ram_Total="$((mem_total / 1024))"
-export tanggal=`date -d "0 days" +"%d-%m-%Y - %X" `
-export OS_Name=$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/PRETTY_NAME//g' | sed 's/=//g' | sed 's/"//g' )
-export Kernel=$( uname -r )
-export Arch=$( uname -m )
-export IP=$( curl -s https://ipinfo.io/ip/ )
 
-function install_haproxy() {
-    # Set timezone
+# ==========================================
+# Fungsi Utama
+# ==========================================
+PRINT_DONE() {
+    echo -e "${OK} ${BLUE}$1${Softex}"
+}
+
+PRINT_FAILURE() {
+    echo -e "${ERROR} ${RED}$1${Softex}"
+}
+
+PRINTF_INSTALL() {
+    echo -e "${GRN}=================================${Softex}"
+    echo -e "${CY}# $1 ${Softex}"
+    echo -e "${GRN}=================================${Softex}"
+    sleep 1
+}
+
+CHECKING_ROOT_USER() {
+    if [[ $EUID -ne 0 ]]; then
+        PRINT_FAILURE "Script must be run as root. Exiting..."
+        exit 1
+    fi
+}
+
+VALIDITY_IPVPS() {
+    if [[ -z "$MyIP_Vps" ]]; then
+        PRINT_FAILURE "Unable to detect your IP address. Exiting..."
+        exit 1
+    fi
+    PRINT_DONE "IP Detected: $MyIP_Vps"
+}
+
+SETUP_DIRECTORIES() {
+    PRINTF_INSTALL "Setting up directories and permissions"
+    mkdir -p /etc/xray /var/log/xray /var/lib/LT
+    curl -s ifconfig.me > /etc/xray/ipvps
+    touch /etc/xray/domain
+    chown www-data:www-data /var/log/xray
+    chmod +x /var/log/xray
+    touch /var/log/xray/access.log
+    touch /var/log/xray/error.log
+    PRINT_DONE "Directories and permissions set up successfully"
+}
+
+FETCH_USER_INFO() {
+    PRINTF_INSTALL "Fetching user information"
+    username=$(curl -s https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep $MyIP_Vps | awk '{print $2}')
+    expx=$(curl -s https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep $MyIP_Vps | awk '{print $3}')
+    if [[ -z "$username" || -z "$expx" ]]; then
+        PRINT_FAILURE "User information not found for IP: $MyIP_Vps"
+        exit 1
+    fi
+    echo "$username" > /usr/bin/user
+    echo "$expx" > /usr/bin/e
+    PRINT_DONE "User: $username, Expiry: $expx"
+}
+
+CALCULATE_RAM_USAGE() {
+    PRINTF_INSTALL "Calculating RAM usage"
+    local mem_used=0 mem_total=0
+    while IFS=":" read -r key value; do
+        case $key in
+            "MemTotal") mem_total="${value/kB}"; mem_used="${value/kB}" ;;
+            "MemFree" | "Buffers" | "Cached" | "SReclaimable")
+                mem_used=$((mem_used - ${value/kB}))
+                ;;
+        esac
+    done < /proc/meminfo
+    Ram_Usage=$((mem_used / 1024))
+    Ram_Total=$((mem_total / 1024))
+    PRINT_DONE "RAM Usage: ${Ram_Usage}MB/${Ram_Total}MB"
+}
+
+# ==========================================
+# Main Script
+# ==========================================
+main() {
+    clear
+    echo -e "${CY}=========================================${Softex}"
+    echo -e "\033[41;97;1m          LUNATIC TUNNELING SETUP         \033[0m"
+    echo -e "${CY}=========================================${Softex}"
+    echo ""
+
+    CHECKING_ROOT_USER
+    VALIDITY_IPVPS
+    SETUP_DIRECTORIES
+    FETCH_USER_INFO
+    CALCULATE_RAM_USAGE
+
+    PRINT_DONE "Setup completed successfully"
+}
+
+main "$@"
+
+function INSTALL_HAPROXY() {
+    # Mengatur timezone
+    PRINTF_INSTALL "Mengatur Timezone"
     timedatectl set-timezone Asia/Jakarta
-    echo "Timezone set to Asia/Jakarta."
+    PRINT_DONE "Timezone diatur ke Asia/Jakarta"
 
-    # Konfigurasi iptables-persistent
-    echo "Configuring iptables-persistent..."
+    # Mengatur auto-save iptables
+    PRINTF_INSTALL "Mengatur iptables-persistent"
     echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
     echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-    apt-get update
-    apt-get install -y iptables-persistent
 
-    # Mengambil nama distribusi OS
-    local os_name
-    os_name=$(awk -F= '/^ID=/ { print $2 }' /etc/os-release | tr -d '"')
-
-    # Mengambil versi distribusi OS
-    local os_version
-    os_version=$(awk -F= '/^VERSION_ID=/ { print $2 }' /etc/os-release | tr -d '"')
-
-    # Menentukan codename Ubuntu
-    local ubuntu_codename
-    if [[ "$os_name" == "ubuntu" ]]; then
-        ubuntu_codename=$(lsb_release -cs)
-        if [[ "$ubuntu_codename" == "noble" || "$ubuntu_codename" == "jammy" || "$ubuntu_codename" == "oracular" ]]; then
-            echo "Codename '$ubuntu_codename' detected, using 'focal' as fallback."
-            ubuntu_codename="focal"
-        fi
-    fi
-
-    # Melakukan setup tergantung pada distribusi
-    case "$os_name" in
-        ubuntu)
-            echo "Setting up dependencies for Ubuntu $os_version ($ubuntu_codename)"
-            apt-get update
-            apt-get install -y software-properties-common
-
-            # Tambahkan repository dengan codename yang benar
-            add-apt-repository -y ppa:vbernat/haproxy-2.0
-            sed -i "s|noble|$ubuntu_codename|g" /etc/apt/sources.list.d/vbernat-ubuntu-haproxy-2_0-*.list
-            sed -i "s|jammy|$ubuntu_codename|g" /etc/apt/sources.list.d/vbernat-ubuntu-haproxy-2_0-*.list
-            sed -i "s|oracular|$ubuntu_codename|g" /etc/apt/sources.list.d/vbernat-ubuntu-haproxy-2_0-*.list            
-            apt-get update
-
-            # Instalasi HAProxy
-            apt-get install -y haproxy
-            ;;
-        debian)
-            echo "Setting up dependencies for Debian $os_version"
-            curl -fsSL https://haproxy.debian.net/bernat.debian.org.gpg | gpg --dearmor > /usr/share/keyrings/haproxy.debian.net.gpg
-            case "$os_version" in
-                "10")
-                    echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net buster-backports main" | \
-                        tee /etc/apt/sources.list.d/haproxy.list > /dev/null
-                    ;;
-                "11")
-                    echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net bullseye-backports main" | \
-                        tee /etc/apt/sources.list.d/haproxy.list > /dev/null
-                    ;;
-                "12")
-                    echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net bookworm-backports main" | \
-                        tee /etc/apt/sources.list.d/haproxy.list > /dev/null
-                    ;;
-                *)
-                    echo "Unsupported Debian version ($os_version). Exiting..."
-                    exit 1
-                    ;;
-            esac
-            apt-get update
-            apt-get install -y haproxy
-            ;;
-        *)
-            echo "Your OS ($os_name $os_version) is not supported. Exiting..."
-            exit 1
-            ;;
-    esac
-
-    echo "Setup completed successfully."
-}
-
-
-function base_package() {
-# Fungsi untuk mengunduh konfigurasi
-download_dependencies() {
-    echo "Mengunduh konfigurasi untuk $OS $VERSION..."
-    wget "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
-
-    if [[ $? -eq 0 ]]; then
-        echo "Dependencies sukses di unduh.."
-    else
-        echo "Gagal mengunduh konfigurasi."
-        exit 1
-    fi
-}
-
-# Deteksi OS dan versinya
-if [[ -f /etc/os-release ]]; then
-    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
-    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
+    # Mengecek dan mengatur dependensi berdasarkan OS
+    OS=$(grep -w ID /etc/os-release | head -n1 | awk -F= '{print $2}' | sed 's/"//g')
+    PRETTY_NAME=$(grep -w PRETTY_NAME /etc/os-release | head -n1 | awk -F= '{print $2}' | sed 's/"//g')
     
-    if [[ "$OS" == "ubuntu" ]]; then
-        if [[ "$VERSION" == "20.04" || "$VERSION" == "20.04.1" || "$VERSION" == "20.04.6" ]]; then
-            CONFIG_PATH="dependencies/ubu20.sh"
-            chmod +x ubu20.sh ./ubu20.sh            
-        elif [[ "$VERSION" == "22.04" || "$VERSION" == "22.04.1" || "$VERSION" == "22.04.6" ]]; then
-            CONFIG_PATH="dependencies/ubu22.sh"
-            chmod +x ubu22.sh ./ubu22.sh          
-        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
-            CONFIG_PATH="dependencies/ubu24.sh"
-            chmod +x ubu24.sh ./ubu24.sh
+    if [[ $OS == "ubuntu" ]]; then
+        PRINTF_INSTALL "Meng install haproxy untuk OS (${PRETTY_NAME})"
+        apt update -y
+        apt-get install --no-install-recommends -y software-properties-common
+        add-apt-repository ppa:vbernat/haproxy-2.0 -y
+        apt-get install -y haproxy=2.0.\*
+        PRINT_DONE "Haproxy berhasil di Install di ubuntu"
+
+    elif [[ $OS == "debian" ]]; then
+        PRINTF_INSTALL "Mengatur dependensi untuk Debian (${PRETTY_NAME})"
+        curl -fsSL https://haproxy.debian.net/bernat.debian.org.gpg | gpg --dearmor -o /usr/share/keyrings/haproxy.debian.net.gpg
+        echo "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net $(lsb_release -cs)-backports-1.8 main" > /etc/apt/sources.list.d/haproxy.list
+        apt-get update
+        apt-get install -y haproxy=1.8.\*
+        PRINT_DONE "Haproxy berhasil di install di debian"
+    else
+        PRINT_FAILURE "Operating System (${PRETTY_NAME}) not compatible."
+        exit 1
+    fi
+}
+
+function INSTALL_NGINX() {
+    # Pendeteksian OS
+    OS=$(grep -w ID /etc/os-release | head -n1 | awk -F= '{print $2}' | sed 's/"//g')
+    PRETTY_NAME=$(grep -w PRETTY_NAME /etc/os-release | head -n1 | awk -F= '{print $2}' | sed 's/"//g')
+
+    PRINTF_INSTALL "Instalasi Nginx untuk ${PRETTY_NAME}"
+
+    # Instalasi berdasarkan OS
+    if [[ $OS == "ubuntu" || $OS == "debian" ]]; then
+        apt update -y
+        apt install -y nginx
+        if [[ $? -eq 0 ]]; then
+            PRINT_SUCCES "Nginx berhasil diinstal pada ${PRETTY_NAME}"
         else
-            echo "OS Ubuntu $VERSION tidak didukung."
-            exit 1
-        fi
-    elif [[ "$OS" == "debian" ]]; then
-        if [[ "$VERSION" == "10" ]]; then
-            CONFIG_PATH="dependencies/deb10.sh"
-            bash deb10.sh
-        elif [[ "$VERSION" == "11" ]]; then
-            CONFIG_PATH="dependencies/deb11.sh"
-            bash deb11.sh            
-        elif [[ "$VERSION" == "12" ]]; then
-            CONFIG_PATH="dependencies/deb12.sh"
-            bash deb12.sh            
-        else
-            echo "OS Debian $VERSION tidak didukung."
+            PRINT_FAILURE "Gagal menginstal Nginx pada ${PRETTY_NAME}"
             exit 1
         fi
     else
-        echo "Sistem Operasi tidak didukung: $OS $VERSION"
+        PRINT_FAILURE "Sistem operasi ${PRETTY_NAME} tidak didukung"
         exit 1
     fi
-else
-    echo "File /etc/os-release tidak ditemukan. Tidak dapat mendeteksi OS."
-    exit 1
-fi
+}
 
-# Unduh file konfigurasi
-download_dependencies
+function INSTALL_TOOLS() {
+    clear
+    PRINTF_INSTALL "Menginstal Paket yang Dibutuhkan"
+
+    # Update dan upgrade sistem
+    apt update -y && apt upgrade -y && apt dist-upgrade -y
+
+    # Instal paket dasar
+    apt install -y zip pwgen openssl netcat socat cron bash-completion figlet sudo ntpdate \
+        speedtest-cli vnstat libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev \
+        libcap-ng-utils libselinux1-dev libcurl4-nss-dev flex bison make libnss3-tools \
+        libevent-dev bc rsyslog dos2unix zlib1g-dev libssl-dev libsqlite3-dev sed dirmngr \
+        libxml-parser-perl build-essential gcc g++ python3-pip htop lsof tar wget curl ruby \
+        zip unzip p7zip-full libc6 util-linux msmtp-mta ca-certificates bsd-mailx iptables \
+        iptables-persistent netfilter-persistent net-tools openssl ca-certificates gnupg \
+        gnupg2 lsb-release gcc shc make cmake git screen socat xz-utils apt-transport-https \
+        gnupg1 dnsutils cron bash-completion ntpdate chrony jq openvpn easy-rsa
+
+    # Konfigurasi firewall dan jaringan
+    echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+    echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+    sudo apt-get remove --purge -y exim4 ufw firewalld
+    sudo apt-get clean all && sudo apt-get autoremove -y
+
+    # Sinkronisasi waktu
+    systemctl enable chrony && systemctl restart chrony
+    ntpdate pool.ntp.org
+
+    # Verifikasi konfigurasi waktu
+    chronyc sourcestats -v
+    chronyc tracking -v
+
+    PRINT_SUCCES "Paket yang Dibutuhkan Telah Berhasil Diinstal"
 }
-clear
-function pasang_domain() {
-echo -e ""
-clear
-echo -e "   .----------------------------------."
-echo -e "   |\e[1;32mPlease Select a Domain Type Below \e[0m|"
-echo -e "   '----------------------------------'"
-echo -e "     \e[1;32m1)\e[0m Domain pribadi"
-echo -e "     \e[1;32m2)\e[0m Random Domain "
-echo -e "   ------------------------------------"
-read -p "   Please select numbers 1-2 or Any Button(Random) : " host
-echo ""
-if [[ $host == "1" ]]; then
-clear
-echo -e "   ------------------------------------"
-echo -e "           CHANGES DOMAIN  "
-echo -e "   ------------------------------------"
-echo -e ""
-read -p "   input your domain :   " host1
-echo "IP=" >> /var/lib/LT/ipvps.conf
-echo $host1 > /etc/xray/domain
-echo $host1 > /root/domain
-echo ""
-elif [[ $host == "2" ]]; then
-wget ${REPO}files/cf.sh && chmod +x cf.sh && ./cf.sh
-rm -f /root/cf.sh
-clear
-else
-print_install "Random Subdomain/Domain is Used"
-clear
-fi
+
+function INSTALL_DOMAIN() {
+    clear
+    echo -e ""
+    echo -e "   .----------------------------------."
+    echo -e "   | \e[1;32mSilakan Pilih Jenis Domain Di Bawah Ini \e[0m|"
+    echo -e "   '----------------------------------'"
+    echo -e "     \e[1;32m1)\e[0m Domain Pribadi"
+    echo -e "     \e[1;32m2)\e[0m Random Domain"
+    echo -e "   ------------------------------------"
+    read -p "   Pilih angka 1-2 atau tombol lainnya untuk Random Domain: " host
+    echo ""
+
+    if [[ $host == "1" ]]; then
+    echo -e "${CY}=========================================${Softex}"
+    echo -e "\033[41;97;1m          ADDON DOMAIN VPS         \033[0m"
+    echo -e "${CY}=========================================${Softex}"
+        echo -e ""
+        read -p "   Masukkan domain Anda: " host1
+
+        if [[ -z "$host1" ]]; then
+            echo -e "${RED}Domain tidak boleh kosong!${Softex}"
+            exit 1
+        fi
+
+        echo "IP=" > /var/lib/LT/ipvps.conf
+        echo "$host1" > /etc/xray/domain
+        echo "$host1" > /root/domain
+        echo -e "${GRN}Domain berhasil diatur menjadi $host1 ${Softex}"
+        echo ""
+    elif [[ $host == "2" ]]; then
+        echo -e "${CY}Menggunakan Random Domain...${Softex}"
+        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
+        rm -f /root/cf.sh
+        clear
+    else
+        echo -e "${RED}Input tidak valid, Random Domain akan digunakan.${Softex}"
+        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
+        rm -f /root/cf.sh
+        clear
+    fi
 }
-clear
-restart_system() {
-USRSC=$(wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $ipsaya | awk '{print $2}')
-EXPSC=$(wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/vps_access/main/ip | grep $ipsaya | awk '{print $3}')
-TIMEZONE=$(printf '%(%H:%M:%S)T')
-TEXT="
+
+function SEND_NOTIF() {
+    # Mendapatkan informasi dari server
+    USRSC=$(wget -qO- https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep "$MyIP_Vps" | awk '{print $2}')
+    EXPSC=$(wget -qO- https://raw.githubusercontent.com/LunaticTunnel/izin/master/ip | grep "$MyIP_Vps" | awk '{print $3}')
+    TIMEZONE=$(date '+%H:%M:%S')
+
+    # Memastikan variabel domain tidak kosong
+    if [[ -z "$domain" ]]; then
+        domain="Tidak Diketahui"
+    fi
+
+    # Memastikan IP terdeteksi
+    if [[ -z "$MyIP_Vps" ]]; then
+        MyIP_Vps="Tidak Diketahui"
+    fi
+
+    # Membuat pesan notifikasi
+    TEXT="
 <code>────────────────────</code>
 <b> 🟢 NOTIFICATIONS INSTALL 🟢</b>
 <code>────────────────────</code>
@@ -348,192 +269,194 @@ TEXT="
 <code>Domain : </code><code>$domain</code>
 <code>Date   : </code><code>$TIME</code>
 <code>Time   : </code><code>$TIMEZONE</code>
-<code>Ip vps : </code><code>$ipsaya</code>
+<code>IP VPS : </code><code>$MyIP_Vps</code>
 <code>Exp Sc : </code><code>$EXPSC</code>
 <code>────────────────────</code>
-<i>Automatic Notification from Github</i>
-"'&reply_markup={"inline_keyboard":[[{"text":"⭐ᴏʀᴅᴇʀ⭐","url":"https://t.me/sanzVPN"},{"text":"⭐ɪɴꜱᴛᴀʟʟ⭐","url":"https://wa.me/6282240074362"}]]}'
-curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
-}
-clear
-function pasang_ssl() {
-clear
-print_install "Memasang SSL Pada Domain"
-apt install socat
-apt install nginx -y
-rm -rf /etc/xray/xray.key
-rm -rf /etc/xray/xray.crt
-domain=$(cat /root/domain)
-STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
-rm -rf /root/.acme.sh
-mkdir /root/.acme.sh
-systemctl stop $STOPWEBSERVER
-systemctl stop nginx
-curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
-chmod +x /root/.acme.sh/acme.sh
-/root/.acme.sh/acme.sh --upgrade --auto-upgrade
-/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
-/root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
-~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-chmod 777 /etc/xray/xray.key
-print_success "SSL Certificate"
-}
-function make_folder_xray() {
-    # Hapus database lama jika ada
-    rm -rf /etc/lunatic/vmess/.vmess.db
-    rm -rf /etc/lunatic/vless/.vless.db
-    rm -rf /etc/lunatic/trojan/.trojan.db
-    rm -rf /etc/lunatic/ssh/.ssh.db
-    rm -rf /etc/lunatic/bot/.bot.db
+<i>Automatic Notification from Github</i>"
 
-    # Buat struktur direktori utama
-    mkdir -p /etc/lunatic
-    mkdir -p /etc/limit
-    mkdir -p /usr/bin/xray
-    mkdir -p /var/log/xray
-    mkdir -p /var/www/html
-    mkdir -p /usr/sbin/local
+    # Menambahkan tombol inline
+    INLINE_KEYBOARD='{"inline_keyboard":[[{"text":"⭐ᴏʀᴅᴇʀ⭐","url":"https://t.me/sanzVPN"},{"text":"⭐ɪɴꜱᴛᴀʟʟ⭐","url":"https://wa.me/6282240074362"}]]}'
 
-    # Buat direktori layanan dan subdirektorinya
-    for service in vmess vless trojan ssh; do
-        mkdir -p /etc/lunatic/$service/ip
-        mkdir -p /etc/lunatic/$service/detail
-        mkdir -p /etc/lunatic/$service/usage
-    done
+    # Mengirim notifikasi ke Telegram
+    curl -s --max-time "$TIMES" \
+        -d "chat_id=$CHATID" \
+        -d "disable_web_page_preview=1" \
+        -d "text=$TEXT" \
+        -d "parse_mode=html" \
+        -d "reply_markup=$INLINE_KEYBOARD" \
+        "$URL" >/dev/null
 
-    # Buat direktori khusus untuk bot
-    mkdir -p /etc/lunatic/bot
-    mkdir -p /etc/lunatic/bot/notif
-
-    # Beri izin eksekusi untuk log xray
-    chmod +x /var/log/xray
-
-    # Buat file penting
-    touch /etc/xray/domain
-    touch /var/log/xray/access.log
-    touch /var/log/xray/error.log
-
-    # Buat file database untuk masing-masing layanan
-    for service in vmess vless trojan ssh; do
-        touch /etc/lunatic/$service/.$service.db
-        echo "& plugin Account" >> /etc/lunatic/$service/.$service.db
-    done
-
-    # Buat file untuk bot
-    touch /etc/lunatic/bot/.bot.db
-    touch /etc/lunatic/bot/notif/key
-    touch /etc/lunatic/bot/notif/id
-
-    # Tambahkan plugin ke database bot
-    echo "& plugin Account" >> /etc/lunatic/bot/.bot.db
-}
-function install_xray() {
-clear
-print_install "Core Xray 1.8.1 Latest Version"
-
-# Buat direktori domain socket jika belum ada
-domainSock_dir="/run/xray"
-if [ ! -d "$domainSock_dir" ]; then
-    mkdir -p "$domainSock_dir"
-fi
-chown www-data:www-data "$domainSock_dir"
-
-# Ambil versi terbaru dari Xray Core
-latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-
-# Unduh dan instal Xray Core dengan versi terbaru
-bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version "$latest_version"
-
-# Unduh file konfigurasi
-wget -O /etc/xray/config.json "${REPO}cfg_conf_js/config.json" >/dev/null 2>&1
-wget -O /etc/systemd/system/runn.service "${REPO}files/runn.service" >/dev/null 2>&1
-
-# Baca domain dan IP dari file konfigurasi
-domain=$(cat /etc/xray/domain)
-IPVS=$(cat /etc/xray/ipvps)
-
-# Cetak pesan sukses
-print_success "Core Xray 1.8.1 Latest Version Installed"
-
-# Bersihkan layar
-clear
-
-# Ambil informasi lokasi dan ISP
-curl -s ipinfo.io/city >/etc/xray/city
-curl -s ipinfo.io/org | cut -d " " -f 2-10 >/etc/xray/isp
-
-# Cetak pesan instalasi paket selesai
-print_install "Memasang haproxy.cfg"
-
-#wget -O /etc/haproxy/haproxy.cfg "${REPO}cfg_conf_js/haproxy.cfg" >/dev/null 2>&1
-
-# Fungsi untuk mengunduh konfigurasi
-download_config() {
-    echo "Mengunduh konfigurasi untuk $OS $VERSION..."
-    wget -O /etc/haproxy/haproxy.cfg "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
-
+    # Memastikan curl berhasil
     if [[ $? -eq 0 ]]; then
-        echo -e "\e[36;1m Haproxy berhasil diunduh \e[0m"
+        echo -e "${GRN}Notifikasi berhasil dikirim.${Softex}"
     else
-        echo -e "\e[31;1m Gagal mengunduh haproxy.\e[0m"
-        exit 1
+        echo -e "${RED}Gagal mengirim notifikasi.${Softex}"
     fi
 }
 
-# Deteksi OS dan versinya
-if [[ -f /etc/os-release ]]; then
-    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
-    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
-    
-    if [[ "$OS" == "ubuntu" ]]; then
-        if [[ "$VERSION" == "20.04" ]]; then
-            CONFIG_PATH="haproxy/ubu20/haproxy.cfg"
-        elif [[ "$VERSION" == "22.04" ]]; then
-            CONFIG_PATH="haproxy/ubu20/haproxy.cfg"
-        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
-            CONFIG_PATH="haproxy/ubu20/haproxy.cfg"
-        else
-            echo "OS Ubuntu $VERSION tidak didukung."
-            exit 1
-        fi
-    elif [[ "$OS" == "debian" ]]; then
-        if [[ "$VERSION" == "10" ]]; then
-            CONFIG_PATH="haproxy/deb10/haproxy.cfg"
-        elif [[ "$VERSION" == "11" ]]; then
-            CONFIG_PATH="haproxy/deb10/haproxy.cfg"
-        elif [[ "$VERSION" == "12" ]]; then
-            CONFIG_PATH="haproxy/deb10/haproxy.cfg"
-        else
-            echo "OS Debian $VERSION tidak didukung."
-            exit 1
-        fi
-    else
-        echo "Sistem Operasi tidak didukung: $OS $VERSION"
+function INSTALL_SSLCERT() {
+    clear
+    PRINTF_INSTALL "Memasang SSL pada Domain"
+
+    # Membersihkan file SSL sebelumnya
+    rm -f /etc/xray/xray.key
+    rm -f /etc/xray/xray.crt
+
+    # Mendapatkan nama domain
+    domain=$(cat /root/domain 2>/dev/null)
+
+    # Validasi domain
+    if [[ -z "$domain" ]]; then
+        echo -e "${RED}Error: Domain tidak ditemukan. Pastikan Anda sudah mengatur domain sebelumnya.${Softex}"
         exit 1
     fi
-else
-    echo "File /etc/os-release tidak ditemukan. Tidak dapat mendeteksi OS."
-    exit 1
-fi
 
-# Unduh file konfigurasi
-download_config
+    # Menghentikan server yang menggunakan port 80
+    STOPWEBSERVER=$(lsof -i:80 | awk 'NR==2 {print $1}')
+    if [[ -n "$STOPWEBSERVER" ]]; then
+        systemctl stop "$STOPWEBSERVER"
+    fi
+    systemctl stop nginx
+
+    # Membersihkan dan menyiapkan direktori untuk ACME
+    rm -rf /root/.acme.sh
+    mkdir -p /root/.acme.sh
+
+    # Mengunduh dan mengatur ACME
+    curl -s https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
+    chmod +x /root/.acme.sh/acme.sh
+
+    # Memperbarui ACME dan menetapkan server Let's Encrypt
+    /root/.acme.sh/acme.sh --upgrade --auto-upgrade
+    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+
+    # Menerbitkan sertifikat SSL
+    /root/.acme.sh/acme.sh --issue -d "$domain" --standalone -k ec-256
+    if [[ $? -ne 0 ]]; then
+        echo -e "${RED} Gagal menerbitkan sertifikat SSL.${Softex}"
+        exit 1
+    fi
+
+    # Memasang sertifikat SSL
+    /root/.acme.sh/acme.sh --installcert -d "$domain" \
+        --fullchainpath /etc/xray/xray.crt \
+        --keypath /etc/xray/xray.key \
+        --ecc
+    if [[ $? -ne 0 ]]; then
+        echo -e "${RED} Gagal memasang sertifikat SSL.${Softex}"
+        exit 1
+    fi
+
+    # Mengatur izin file SSL
+    chmod 600 /etc/xray/xray.key
+    chmod 644 /etc/xray/xray.crt
+
+    PRINT_SUCCES "Sertifikat SSL berhasil dipasang untuk domain $domain"
+}
+
+function INSTALL_FOLDER() {
+  # Hapus file database lama jika ada
+  rm -rf /etc/lunatic/{vmess/.vmess.db,vless/.vless.db,trojan/.trojan.db,shadowsocks/.shadowsocks.db,ssh/.ssh.db,bot/.bot.db}
+
+  # Buat direktori utama
+  mkdir -p /etc/lunatic \
+           /etc/limit \
+           /usr/bin/xray \
+           /var/log/xray \
+           /var/www/html \
+           /usr/sbin/local \
+           /usr/local/sbin
+
+  # Buat direktori khusus layanan
+  for service in vmess vless trojan shadowsocks ssh; do
+    mkdir -p /etc/lunatic/$service/{ip,detail,usage}
+  done
+
+  # Direktori tambahan untuk bot dan fitur lainnya
+  mkdir -p /etc/lunatic/bot/{telegram,notif}
+  mkdir -p /etc/lunatic/noobzvpns/detail
+
+  # Set izin untuk direktori log
+  chmod -R 755 /var/log/xray
+
+  # Buat file penting
+  touch /etc/xray/v2ray \
+        /var/log/xray/{access.log,error.log} \
+        /etc/lunatic/{vmess/.vmess.db,vless/.vless.db,trojan/.trojan.db,ssh/.ssh.db,bot/.bot.db} \
+        /etc/lunatic/bot/notif/{key,id}
+
+  # Isi file database dengan template awal
+  for db in vmess vless trojan ssh; do
+    if [[ ! -f /etc/lunatic/$db/.${db}.db ]]; then
+      echo "& plughin Account" > /etc/lunatic/$db/.${db}.db
+    fi
+  done
+
+    PRINT_SUCCES "Folder dan file Xray berhasil perbarui"
+}
+
+function INSTALL_XRAY() {
+    clear
+    PRINTF_INSTALL "Memasang Xray Core Versi Terbaru"
+
+    # Direktori untuk domain socket
+    domainSock_dir="/run/xray"
+    if [ ! -d $domainSock_dir ]; then
+        mkdir $domainSock_dir
+        chown www-data:www-data $domainSock_dir
+    fi
+
+    # Mendapatkan versi terbaru Xray dari GitHub
+    latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+
+    # Memasang Xray menggunakan skrip resmi
+    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version $latest_version
+
+    # Mendownload konfigurasi awal
+    wget -O /etc/xray/config.json "${REPO}cfg_conf_js/config.json" >/dev/null 2>&1
+    wget -O /etc/systemd/system/runn.service "${REPO}files/runn.service" >/dev/null 2>&1
+
+    # Membaca domain dan IP VPS
+    domain=$(cat /etc/xray/domain)
+    IPVS=$(cat /etc/xray/ipvps)
+
+    PRINT_SUCCES "Xray Core Versi $latest_version berhasil dipasang"
 
     clear
-    echo -e "\e[36;1m HAProxy berhasil dimulai ulang dengan konfigurasi baru.\e[0m"
 
+    # Menambahkan informasi lokasi dan ISP ke konfigurasi
+    curl -s ipinfo.io/city >>/etc/xray/city
+    curl -s ipinfo.io/org | cut -d " " -f 2-10 >>/etc/xray/isp
 
-wget -O /etc/nginx/conf.d/xray.conf "${REPO}cfg_conf_js/xray.conf" >/dev/null 2>&1
-sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
-sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
-curl ${REPO}cfg_conf_js/nginx.conf > /etc/nginx/nginx.conf
-cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem
-chmod +x /etc/systemd/system/runn.service
-rm -rf /etc/systemd/system/xray.service.d
-cat >/etc/systemd/system/xray.service <<EOF
+    PRINTF_INSTALL "Mengonfigurasi Paket Pendukung"
+
+    # Mendownload file konfigurasi tambahan
+    wget -O /etc/haproxy/haproxy.cfg "${REPO}cfg_conf_js/haproxy.cfg" >/dev/null 2>&1
+    wget -O /etc/nginx/conf.d/xray.conf "${REPO}cfg_conf_js/xray.conf" >/dev/null 2>&1
+
+    # Mengganti placeholder domain dalam file konfigurasi
+    sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
+    sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
+
+    # Mengonfigurasi Nginx
+    curl ${REPO}cfg_conf_js/nginx.conf > /etc/nginx/nginx.conf
+
+    # Membuat file SSL untuk HAProxy
+    cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem >/dev/null 2>&1
+
+    # Memberikan izin eksekusi pada service
+    chmod +x /etc/systemd/system/runn.service
+
+    # Menghapus konfigurasi lama jika ada
+    rm -rf /etc/systemd/system/xray.service.d
+
+    # Membuat konfigurasi service systemd untuk Xray
+    cat >/etc/systemd/system/xray.service <<EOF
+[Unit]
 Description=Xray Service
-Documentation=https://github.com
+Documentation=https://github.com/XTLS/Xray-core
 After=network.target nss-lookup.target
+
 [Service]
 User=www-data
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
@@ -542,20 +465,28 @@ NoNewPrivileges=true
 ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
 Restart=on-failure
 RestartPreventExitStatus=23
-filesNPROC=10000
-filesNOFILE=1000000
+LimitNPROC=10000
+LimitNOFILE=1000000
+
 [Install]
 WantedBy=multi-user.target
 EOF
-print_success "Konfigurasi Packet"
+
+    # Menampilkan pesan sukses
+    PRINT_SUCCES "Konfigurasi Paket dan Service Xray berhasil diterapkan"
 }
-function ssh(){
-clear
-print_install "Memasang Password SSH"
-wget -O /etc/pam.d/common-password "${REPO}files/password"
-chmod +x /etc/pam.d/common-password
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure keyboard-configuration
-debconf-set-selections <<<"keyboard-configuration keyboard-configuration/altgr select The default for the keyboard layout"
+
+function INSTALL_PASSWORD() {
+    clear
+    PRINTF_INSTALL "Memasang dan Mengonfigurasi SSH"
+
+    # Mengunduh file konfigurasi password SSH
+    wget -O /etc/pam.d/common-password "${REPO}files/password"
+    chmod +x /etc/pam.d/common-password
+
+    # Konfigurasi keyboard default
+    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure keyboard-configuration
+ebconf-set-selections <<<"keyboard-configuration keyboard-configuration/altgr select The default for the keyboard layout"
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/compose select No compose key"
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/ctrl_alt_bksp boolean false"
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/layoutcode string de"
@@ -573,15 +504,13 @@ debconf-set-selections <<<"keyboard-configuration keyboard-configuration/unsuppo
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/variantcode string "
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/variant select English"
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/xkb-keymap select "
-cd
-cat > /etc/rc.local <<-END
-exit 0
-END
-chmod +x /etc/rc.local
-cat > /etc/systemd/system/rc-local.service <<-END
+
+    # Membuat layanan rc-local jika tidak ada
+    cat > /etc/systemd/system/rc-local.service <<-END
 [Unit]
 Description=/etc/rc.local
 ConditionPathExists=/etc/rc.local
+
 [Service]
 Type=forking
 ExecStart=/etc/rc.local start
@@ -589,218 +518,304 @@ TimeoutSec=0
 StandardOutput=tty
 RemainAfterExit=yes
 SysVStartPriority=99
+
 [Install]
 WantedBy=multi-user.target
 END
-systemctl enable rc-local
-systemctl start rc-local.service
-echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
-sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
-ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
-print_success "Password SSH"
+
+    # Membuat file rc.local jika tidak ada
+    cat > /etc/rc.local <<-END
+#!/bin/bash
+exit 0
+END
+
+    chmod +x /etc/rc.local
+    systemctl enable rc-local
+    systemctl start rc-local.service
+
+    # Menonaktifkan IPv6
+    echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+    sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
+
+    # Mengatur zona waktu ke Asia/Jakarta
+    ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+
+    # Menonaktifkan penerimaan variabel lingkungan di konfigurasi SSH
+    sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
+
+    # Menampilkan pesan sukses
+    PRINT_SUCCES "SSH berhasil dikonfigurasi dan siap digunakan"
 }
-function udp_mini(){
-clear
-print_install "Memasang Service limit Quota"
-wget raw.githubusercontent.com/scriptsvpnlt/v17/main/files/limit.sh && chmod +x limit.sh && ./limit.sh
-cd
-wget -q -O /usr/bin/limit-ip "${REPO}files/limit-ip"
-chmod +x /usr/bin/*
-cd /usr/bin
-sed -i 's/\r//' limit-ip
-cd
-clear
-cat >/etc/systemd/system/vmip.service << EOF
+
+function INSTALL_BADVPN() {
+    clear
+    PRINTF_INSTALL "Memasang Service Limit Quota"
+
+    # Unduh skrip limit.sh dan jalankan
+    wget -q https://raw.githubusercontent.com/LunaticTunnel/ZZxxLTxxZZ/master/files/limit.sh -O limit.sh
+    chmod +x limit.sh
+    ./limit.sh
+
+    # Unduh dan konfigurasikan skrip limit-ip
+    wget -q -O /usr/bin/limit-ip "${REPO}files/limit-ip"
+    chmod +x /usr/bin/limit-ip
+    sed -i 's/\r//' /usr/bin/limit-ip
+
+    # Konfigurasi layanan VMIP
+    cat >/etc/systemd/system/vmip.service <<EOF
 [Unit]
-Description=My
-ProjectAfter=network.target
+Description=Service VMIP
+After=network.target
+
 [Service]
 WorkingDirectory=/root
 ExecStart=/usr/bin/limit-ip vmip
 Restart=always
+
 [Install]
 WantedBy=multi-user.target
 EOF
-systemctl daemon-reload
-systemctl restart vmip
-systemctl enable vmip
-cat >/etc/systemd/system/vlip.service << EOF
+
+    # Aktifkan dan mulai layanan VMIP
+    systemctl daemon-reload
+    systemctl enable vmip
+    systemctl restart vmip
+
+    # Konfigurasi layanan VLIP
+    cat >/etc/systemd/system/vlip.service <<EOF
 [Unit]
-Description=My
-ProjectAfter=network.target
+Description=Service VLIP
+After=network.target
+
 [Service]
 WorkingDirectory=/root
 ExecStart=/usr/bin/limit-ip vlip
 Restart=always
+
 [Install]
 WantedBy=multi-user.target
 EOF
-systemctl daemon-reload
-systemctl restart vlip
-systemctl enable vlip
-cat >/etc/systemd/system/trip.service << EOF
+
+    # Aktifkan dan mulai layanan VLIP
+    systemctl daemon-reload
+    systemctl enable vlip
+    systemctl restart vlip
+
+    # Konfigurasi layanan TRIP
+    cat >/etc/systemd/system/trip.service <<EOF
 [Unit]
-Description=My
-ProjectAfter=network.target
+Description=Service TRIP
+After=network.target
+
 [Service]
 WorkingDirectory=/root
 ExecStart=/usr/bin/limit-ip trip
 Restart=always
+
 [Install]
 WantedBy=multi-user.target
 EOF
-systemctl daemon-reload
-systemctl restart trip
-systemctl enable trip
-mkdir -p /usr/local/lunatic/
-wget -q -O /usr/local/lunatic/udp-mini "${REPO}files/udp-mini"
-chmod +x /usr/local/lunatic/udp-mini
-wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}files/udp-mini-1.service"
-wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}files/udp-mini-2.service"
-wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}files/udp-mini-3.service"
-systemctl disable udp-mini-1
-systemctl stop udp-mini-1
-systemctl enable udp-mini-1
-systemctl start udp-mini-1
-systemctl disable udp-mini-2
-systemctl stop udp-mini-2
-systemctl enable udp-mini-2
-systemctl start udp-mini-2
-systemctl disable udp-mini-3
-systemctl stop udp-mini-3
-systemctl enable udp-mini-3
-systemctl start udp-mini-3
-print_success "files Quota Service"
-}
-clear
-function ins_SSHD(){
-clear
-print_install "Memasang SSHD"
-wget -q -O /etc/ssh/sshd_config "${REPO}files/sshd" >/dev/null 2>&1
-chmod 700 /etc/ssh/sshd_config
-/etc/init.d/ssh restart
-systemctl restart ssh
-/etc/init.d/ssh status
-print_success "SSHD"
-}
-clear
-function ins_dropbear(){
-clear
-print_install "Menginstall Dropbear"
-apt-get install dropbear -y
-wget -q -O /etc/default/dropbear "${REPO}cfg_conf_js/dropbear.conf"  >/dev/null 2>&1
-chmod +x /etc/default/dropbear
-/etc/init.d/dropbear restart
-/etc/init.d/dropbear status
-print_success "Dropbear"
-}
-clear
-function ins_vnstat(){
-clear
-print_install "Menginstall Vnstat"
-apt -y install vnstat
-/etc/init.d/vnstat restart
-apt -y install libsqlite3-dev
-wget https://humdi.net/vnstat/vnstat-2.6.tar.gz
-tar zxvf vnstat-2.6.tar.gz
-cd vnstat-2.6
-./configure --prefix=/usr --sysconfdir=/etc && make && make install
-cd
-vnstat -u -i $NET
-sed -i 's/Interface "'""eth0""'"/Interface "'""$NET""'"/g' /etc/vnstat.conf
-chown vnstat:vnstat /var/lib/vnstat -R
-systemctl enable vnstat
-/etc/init.d/vnstat restart
-/etc/init.d/vnstat status
-rm -f /root/vnstat-2.6.tar.gz
-rm -rf /root/vnstat-2.6
-print_success "Vnstat"
-}
-function ins_openvpn(){
-clear
-apt install openvpn -y
-download_config() {
-    echo "Mengunduh konfigurasi untuk $OS $VERSION..."
-    wget "${REPO}${CONFIG_PATH}" >/dev/null 2>&1
 
-    if [[ $? -eq 0 ]]; then
-        echo -e "\033[36;1m OpenVPN berhasil diunduh \033[0m"
+    # Aktifkan dan mulai layanan TRIP
+    systemctl daemon-reload
+    systemctl enable trip
+    systemctl restart trip
+
+    # Unduh binary UDP Mini dan konfigurasinya
+    mkdir -p /usr/local/kyt/
+    wget -q -O /usr/local/kyt/udp-mini "${REPO}files/udp-mini"
+    chmod +x /usr/local/kyt/udp-mini
+
+    # Konfigurasi layanan UDP Mini 1
+    wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}files/udp-mini-1.service"
+    systemctl disable udp-mini-1
+    systemctl stop udp-mini-1
+    systemctl enable udp-mini-1
+    systemctl start udp-mini-1
+
+    # Konfigurasi layanan UDP Mini 2
+    wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}files/udp-mini-2.service"
+    systemctl disable udp-mini-2
+    systemctl stop udp-mini-2
+    systemctl enable udp-mini-2
+    systemctl start udp-mini-2
+
+    # Konfigurasi layanan UDP Mini 3
+    wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}files/udp-mini-3.service"
+    systemctl disable udp-mini-3
+    systemctl stop udp-mini-3
+    systemctl enable udp-mini-3
+    systemctl start udp-mini-3
+
+    # Tampilkan pesan sukses
+    PRINT_SUCCES "Layanan Quota Service telah berhasil dipasang"
+}
+
+function INSTALL_SSHD() {
+    clear
+    PRINTF_INSTALL "Memasang SSHD"
+
+    # Unduh konfigurasi SSHD dari repository
+    wget -q -O /etc/ssh/sshd_config "${REPO}files/sshd" >/dev/null 2>&1
+
+    # Atur izin file konfigurasi
+    chmod 700 /etc/ssh/sshd_config
+
+    # Restart layanan SSHD
+    systemctl restart ssh
+    systemctl enable ssh
+
+    # Tampilkan status layanan SSHD
+    ssh_status=$(systemctl is-active ssh)
+    if [[ $ssh_status == "active" ]]; then
+        PRINT_SUCCES "SSHD berhasil dipasang dan berjalan"
     else
-        echo -e "\033[31;1m Gagal mengunduh OpenVPN \033[0m"
-        exit 1
+        PRINT_FAILURE "Gagal memulai SSHD. Periksa konfigurasi."
     fi
 }
 
-# Deteksi OS dan versinya
-if [[ -f /etc/os-release ]]; then
-    OS=$(grep -w ID /etc/os-release | cut -d= -f2 | tr -d '"')
-    VERSION=$(grep -w VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"')
+function INSTALL_DROPBEAR() {
+    clear
+    PRINTF_INSTALL "Menginstall Dropbear"
+
+    # Install paket Dropbear
+    apt-get install dropbear -y > /dev/null 2>&1
+
+    # Unduh file konfigurasi Dropbear
+    wget -q -O /etc/default/dropbear "${REPO}cfg_conf_js/dropbear.conf"
+
+    # Atur izin file konfigurasi
+    chmod 600 /etc/default/dropbear
+
+    # Restart layanan Dropbear
+    systemctl restart dropbear
+    systemctl enable dropbear
+
+    # Periksa status layanan Dropbear
+    dropbear_status=$(systemctl is-active dropbear)
+    if [[ $dropbear_status == "active" ]]; then
+        PRINT_SUCCES "Dropbear berhasil dipasang dan berjalan"
+    else
+        PRINT_FAILURE "Gagal memulai Dropbear. Periksa konfigurasi."
+    fi
+}
+
+function INSTALL_VNSTAT() {
+    clear
+    PRINTF_INSTALL "Menginstall Vnstat"
+
+    # Instalasi paket dasar untuk Vnstat
+    apt-get update -y > /dev/null 2>&1
+    apt-get install -y vnstat libsqlite3-dev wget build-essential > /dev/null 2>&1
+
+    # Restart layanan Vnstat untuk memastikan tersedia
+    systemctl restart vnstat || /etc/init.d/vnstat restart
+    systemctl enable vnstat || echo "Service vnstat enabled (init.d)"
+
+    # Unduh dan instal Vnstat versi terbaru dari sumber
+    wget https://humdi.net/vnstat/vnstat-2.6.tar.gz
+    tar zxvf vnstat-2.6.tar.gz
+    cd vnstat-2.6
+    ./configure --prefix=/usr --sysconfdir=/etc > /dev/null 2>&1
+    make > /dev/null 2>&1
+    make install > /dev/null 2>&1
+    cd
+
+    # Konfigurasi Vnstat
+    NET=$(ip route | grep default | awk '{print $5}')
+    vnstat -u -i $NET
+    sed -i "s/Interface \"eth0\"/Interface \"$NET\"/g" /etc/vnstat.conf
+    chown vnstat:vnstat /var/lib/vnstat -R
+
+    # Pastikan layanan berjalan
+    systemctl restart vnstat || /etc/init.d/vnstat restart
+    vnstat_status=$(systemctl is-active vnstat || /etc/init.d/vnstat status)
+
+    # Hapus file instalasi sementara
+    rm -f /root/vnstat-2.6.tar.gz
+    rm -rf /root/vnstat-2.6
+
+    # Verifikasi dan tampilkan status
+    if [[ $vnstat_status == "active" || $vnstat_status == *"running"* ]]; then
+        PRINT_SUCCES "Vnstat berhasil diinstal dan berjalan pada antarmuka $NET"
+    else
+        PRINT_FAILURE "Gagal memulai layanan Vnstat. Periksa log untuk informasi lebih lanjut."
+    fi
+}
+
+function INSTALL_OPENVPN() {
+    clear
+    PRINTF_INSTALL "Menginstall OpenVPN"
+
+    # Deteksi versi OS
+    OS=$(lsb_release -si)
+    VERSION=$(lsb_release -sr | cut -d. -f1)
+
+    # Perbarui sistem dan instal dependensi dasar
+    apt-get update -y > /dev/null 2>&1
+    apt-get install -y wget curl apt-transport-https gnupg > /dev/null 2>&1
+
+    # Menambahkan repository OpenVPN sesuai OS dan versi
+    if [[ "$OS" == "Ubuntu" && "$VERSION" -ge 22 ]] || [[ "$OS" == "Debian" && "$VERSION" -ge 11 ]]; then
+        wget -qO - https://packages.openvpn.net/packages-repo.gpg | gpg --dearmor -o /usr/share/keyrings/openvpn.gpg
+        echo "deb [signed-by=/usr/share/keyrings/openvpn.gpg] https://packages.openvpn.net/openvpn3/debian $(lsb_release -cs) main" \
+            > /etc/apt/sources.list.d/openvpn3.list
+        apt-get update -y > /dev/null 2>&1
+        apt-get install -y openvpn3 > /dev/null 2>&1
+    else
+        apt-get install -y openvpn > /dev/null 2>&1
+    fi
+
+    # Konfigurasi OpenVPN
+    wget -q -O /etc/openvpn/server.conf "${REPO}files/server.conf"
+    mkdir -p /etc/openvpn/easy-rsa
+    wget -q -O /etc/openvpn/easy-rsa/easyrsa "${REPO}files/easyrsa"
+    chmod +x /etc/openvpn/easy-rsa/easyrsa
+
+    # Memulai layanan OpenVPN
+    if [[ "$OS" == "Ubuntu" && "$VERSION" -ge 22 ]] || [[ "$OS" == "Debian" && "$VERSION" -ge 11 ]]; then
+        systemctl enable openvpn3-service
+        systemctl start openvpn3-service
+        systemctl status openvpn3-service
+    else
+        systemctl enable openvpn
+        systemctl start openvpn
+        systemctl status openvpn
+    fi
+
+    # Tampilkan status dan pesan sukses
+    PRINT_SUCCES "OpenVPN berhasil diinstal dan dikonfigurasi."
+}
+
+function INSTALL_RCLONE() {
+    clear
+    PRINTF_INSTALL "Memasang Backup Server"
+
+    # Menentukan distribusi dan versi
+    OS=$(lsb_release -si)
+    VERSION=$(lsb_release -sr | cut -d. -f1)
+
+    # Install rclone
+    apt-get update -y > /dev/null 2>&1
+    apt-get install rclone -y > /dev/null 2>&1
+
+    # Konfigurasi rclone
+    printf "q\n" | rclone config
+    wget -O /root/.config/rclone/rclone.conf "${REPO}cfg_conf_js/rclone.conf"
     
-    if [[ "$OS" == "ubuntu" ]]; then
-        if [[ "$VERSION" == "20.04" || "$VERSION" == "20.04.1" || "$VERSION" == "20.04.6" ]]; then
-            CONFIG_PATH="ovpn/openvpn"
-            chmod +x openvpn && ./openvpn
-            etc/init.d/openvpn restart
-        elif [[ "$VERSION" == "22.04" ]]; then
-            CONFIG_PATH="ovpn/ovpn_ubu24.sh"
-            bash ovpn_ubu24.sh
-            systemctl restart openvpn
-        elif [[ "$VERSION" == "24.04" || "$VERSION" == "24.04.1" ]]; then
-            CONFIG_PATH="ovpn/ovpn_ubu24.sh"
-            bash ovpn_ubu24.sh
-            systemctl restart openvpn
-        else
-            echo "OS Ubuntu $VERSION tidak didukung."
-            exit 1
-        fi
-    elif [[ "$OS" == "debian" ]]; then
-        if [[ "$VERSION" == "10" ]]; then
-            CONFIG_PATH="ovpn/openvpn"
-            chmod +x openvpn && ./openvpn
-            etc/init.d/openvpn restart
-        elif [[ "$VERSION" == "11" ]]; then
-            CONFIG_PATH="ovpn/openvpn"
-            bash openvpn
-        elif [[ "$VERSION" == "12" ]]; then
-            CONFIG_PATH="ovpn/openvpn"
-            bash openvpn
-        else
-            echo "OS Debian $VERSION tidak didukung."
-            exit 1
-        fi
-    else
-        echo "Sistem Operasi tidak didukung: $OS $VERSION"
-        exit 1
-    fi
-else
-    echo "File /etc/os-release tidak ditemukan. Tidak dapat mendeteksi OS."
-    exit 1
-fi
+    # Install Wondershaper
+    cd /bin
+    git clone https://github.com/LunaticTunnel/wondershaper.git
+    cd wondershaper
+    sudo make install
+    cd
+    rm -rf wondershaper
 
-# Unduh file konfigurasi
-download_config
-
-#print_install "Menginstall OpenVPN"
-#wget ${REPO}files/openvpn &&  chmod +x openvpn && ./openvpn
-#/etc/init.d/openvpn restart
-#print_success "OpenVPN"
-}
-function ins_backup(){
-clear
-print_install "Memasang Backup Server"
-apt install rclone -y
-printf "q\n" | rclone config
-wget -O /root/.config/rclone/rclone.conf "${REPO}cfg_conf_js/rclone.conf" >/dev/null 2>&1
-cd /bin
-git clone  https://github.com/LunaticTunnel/wondershaper.git
-cd wondershaper
-sudo make install
-cd
-rm -rf wondershaper
-echo > /home/files
-apt install msmtp-mta ca-certificates bsd-mailx -y
-cat<<EOF>>/etc/msmtprc
+    # Install tools untuk email
+    apt-get install msmtp-mta ca-certificates bsd-mailx -y > /dev/null 2>&1
+    
+    # Konfigurasi msmtp
+    cat <<EOF > /etc/msmtprc
 defaults
 tls on
 tls_starttls on
@@ -814,168 +829,220 @@ from oceantestdigital@gmail.com
 password jokerman77
 logfile ~/.msmtp.log
 EOF
-chown -R www-data:www-data /etc/msmtprc
-wget -q -O /etc/ipserver "${REPO}files/ipserver" && bash /etc/ipserver
-print_success "Backup Server"
-}
-clear
-function ins_swab(){
-clear
-print_install "Memasang Swap 1 G"
-gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
-curl -sL "$gotop_link" -o /tmp/gotop.deb
-dpkg -i /tmp/gotop.deb >/dev/null 2>&1
-dd if=/dev/zero of=/swapfile bs=1024 count=1048576
-mkswap /swapfile
-chown root:root /swapfile
-chmod 0600 /swapfile >/dev/null 2>&1
-swapon /swapfile >/dev/null 2>&1
-sed -i '$ i\/swapfile      swap swap   defaults    0 0' /etc/fstab
-chronyd -q 'server 0.id.pool.ntp.org iburst'
-chronyc sourcestats -v
-chronyc tracking -v
-wget ${REPO}files/bbr.sh &&  chmod +x bbr.sh && ./bbr.sh
-print_success "Swap 1 G"
-}
-function ins_Fail2ban(){
-clear
-print_install "Menginstall Fail2ban"
-if [ -d '/usr/local/ddos' ]; then
-echo; echo; echo "Please un-install the previous version first"
-exit 0
-else
-mkdir /usr/local/ddos
-fi
-clear
-echo "Banner /etc/banner.txt" >>/etc/ssh/sshd_config
-sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/banner.txt"@g' /etc/default/dropbear
-wget -O /etc/banner.txt "${REPO}banner/issue.net" >/dev/null 2>&1
-print_success "Fail2ban"
-}
-function ins_epro(){
-clear
-print_install "Menginstall ePro WebSocket Proxy"
-wget -O /usr/bin/ws "${REPO}files/ws" >/dev/null 2>&1
-wget -O /usr/bin/tun.conf "${REPO}cfg_conf_js/tun.conf" >/dev/null 2>&1
-wget -O /etc/systemd/system/ws.service "${REPO}files/ws.service" >/dev/null 2>&1
-chmod +x /etc/systemd/system/ws.service
-chmod +x /usr/bin/ws
-chmod 644 /usr/bin/tun.conf
-systemctl disable ws
-systemctl stop ws
-systemctl enable ws
-systemctl start ws
-systemctl restart ws
-wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
-wget -q -O /usr/local/share/xray/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat" >/dev/null 2>&1
-wget -O /usr/sbin/ftvpn "${REPO}files/ftvpn" >/dev/null 2>&1
-chmod +x /usr/sbin/ftvpn
-iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
-iptables -A FORWARD -m string --string "announce_peer" --algo bm -j DROP
-iptables -A FORWARD -m string --string "find_node" --algo bm -j DROP
-iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
-iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
-iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
-iptables -A FORWARD -m string --algo bm --string ".torrent" -j DROP
-iptables -A FORWARD -m string --algo bm --string "announce.php?passkey=" -j DROP
-iptables -A FORWARD -m string --algo bm --string "torrent" -j DROP
-iptables -A FORWARD -m string --algo bm --string "announce" -j DROP
-iptables -A FORWARD -m string --algo bm --string "info_hash" -j DROP
-iptables-save > /etc/iptables.up.rules
-iptables-restore -t < /etc/iptables.up.rules
-netfilter-persistent save
-netfilter-persistent reload
-cd
-apt autoclean -y >/dev/null 2>&1
-apt autoremove -y >/dev/null 2>&1
-print_success "ePro WebSocket Proxy"
-}
-function ins_restart(){
-clear
-print_install "Restarting  All Packet"
-/etc/init.d/nginx restart
-/etc/init.d/openvpn restart
-/etc/init.d/ssh restart
-/etc/init.d/dropbear restart
-/etc/init.d/fail2ban restart
-/etc/init.d/vnstat restart
-systemctl restart haproxy
-/etc/init.d/cron restart
-systemctl daemon-reload
-systemctl start netfilter-persistent
-systemctl enable --now nginx
-systemctl enable --now xray
-systemctl enable --now rc-local
-systemctl enable --now dropbear
-systemctl enable --now openvpn
-systemctl enable --now cron
-systemctl enable --now haproxy
-systemctl enable --now netfilter-persistent
-systemctl enable --now ws
-systemctl enable --now fail2ban
-history -c
-echo "unset HISTFILE" >> /etc/profile
-cd
-rm -f /root/openvpn
-rm -f /root/key.pem
-rm -f /root/cert.pem
-print_success "All Packet"
-}
-function menu(){
-clear
-print_install "Memasang Menu Packet"
-wget ${REPO}feature/LUNATIX_py
-unzip LUNATIX_py
-chmod +x menu/*
-mv menu/* /usr/bin
-rm -rf menu
-rm -rf LUNATIX_py
+    chown -R www-data:www-data /etc/msmtprc
 
-wget ${REPO}feature/LUNATIX_sh
-unzip LUNATIX_sh
-chmod +x menu/*
-mv menu/* /usr/local/sbin
-rm -rf menu
-rm -rf LUNATIX_sh
+    # Menjalankan script ipserver
+    wget -q -O /etc/ipserver "${REPO}files/ipserver" && bash /etc/ipserver
+
+    # Pesan keberhasilan
+    PRINT_SUCCES "Backup Server telah terpasang."
 }
-function profile(){
-clear
-cat >/root/.profile <<EOF
-if [ "$BASH" ]; then
-if [ -f ~/.bashrc ]; then
-. ~/.bashrc
-fi
+
+function INSTALL_SWAPP() {
+    clear
+    PRINTF_INSTALL "Memasang Swap 1 G"
+
+    # Mendapatkan versi terbaru dari gotop
+    gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+    gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v$gotop_latest_linux_amd64.deb"
+
+    # Install gotop sesuai dengan distribusi (Ubuntu 20/Debian 10 vs Ubuntu 22/Debian 11)
+    OS=$(lsb_release -si)
+    VERSION=$(lsb_release -sr | cut -d. -f1)
+    
+    # Mengunduh dan menginstal gotop
+    curl -sL "$gotop_link" -o /tmp/gotop.deb
+    if [ "$OS" == "Ubuntu" ] && [ "$VERSION" -ge 22 ]; then
+        # Di Ubuntu 22 atau lebih baru, kita perlu menggunakan `apt` untuk menginstal dependensi
+        apt-get update -y
+        apt-get install -y libncurses6
+    fi
+    dpkg -i /tmp/gotop.deb >/dev/null 2>&1
+
+    # Membuat dan mengaktifkan swap
+    dd if=/dev/zero of=/swapfile bs=1024 count=1048576
+    mkswap /swapfile
+    chown root:root /swapfile
+    chmod 0600 /swapfile >/dev/null 2>&1
+    swapon /swapfile >/dev/null 2>&1
+
+    # Menambahkan swap ke fstab
+    sed -i '$ i\/swapfile      swap swap   defaults    0 0' /etc/fstab
+
+    # Mengatur waktu dan sinkronisasi
+    if ! command -v chronyd &>/dev/null; then
+        # Jika chrony tidak ada, kita bisa install
+        if [ "$OS" == "Ubuntu" ] || [ "$OS" == "Debian" ]; then
+            apt-get install -y chrony
+        fi
+    fi
+    chronyd -q 'server 0.id.pool.ntp.org iburst'
+    chronyc sourcestats -v
+    chronyc tracking -v
+
+    # Menginstall BBR
+    wget ${REPO}files/bbr.sh && chmod +x bbr.sh && ./bbr.sh
+
+    PRINT_SUCCES "Swap 1 G"
+}
+
+function INSTALL_FAIL2BAN(){
+    clear
+    PRINTF_INSTALL "Menginstall Fail2ban"
+
+    # Memeriksa apakah ada versi sebelumnya yang diinstal
+    if [ -d '/usr/local/ddos' ]; then
+        echo; echo; echo "Please un-install the previous version first"
+        exit 0
+    else
+        mkdir /usr/local/ddos
+    fi
+
+    # Memeriksa apakah Fail2ban sudah terinstal, jika belum, maka diinstal
+    if ! dpkg -l | grep -q fail2ban; then
+        if [ -f /etc/lsb-release ]; then
+            . /etc/lsb-release
+            if [[ "$DISTRIB_ID" == "Ubuntu" ]] || [[ "$DISTRIB_ID" == "Debian" ]]; then
+                apt-get update -y
+                apt-get install -y fail2ban > /dev/null 2>&1
+            fi
+        fi
+    fi
+
+    # Menambahkan banner ke konfigurasi SSH dan Dropbear
+    echo "Banner /etc/banner.txt" >>/etc/ssh/sshd_config
+    sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/banner.txt"@g' /etc/default/dropbear
+
+    # Mengunduh dan menyetel banner
+    wget -O /etc/banner.txt "${REPO}banner/issue.net" > /dev/null 2>&1
+
+    # Restart Fail2ban untuk memastikan konfigurasi diterapkan
+    systemctl restart fail2ban
+
+    PRINT_SUCCES "Fail2ban"
+}
+
+function INSTALL_EPROWS(){
+    clear
+    PRINTF_INSTALL "Menginstall ePro WebSocket Proxy"
+    
+    # Unduh dan pasang ws, tun.conf, dan ws.service
+    wget -O /usr/bin/ws "${REPO}files/ws" >/dev/null 2>&1
+    wget -O /usr/bin/tun.conf "${REPO}cfg_conf_js/tun.conf" >/dev/null 2>&1
+    wget -O /etc/systemd/system/ws.service "${REPO}files/ws.service" >/dev/null 2>&1
+
+    # Berikan izin akses yang tepat untuk file yang diunduh
+    chmod +x /usr/bin/ws
+    chmod 644 /usr/bin/tun.conf
+    chmod +x /etc/systemd/system/ws.service
+    
+    # Matikan dan nonaktifkan service ws jika aktif sebelumnya
+    systemctl disable ws
+    systemctl stop ws
+    systemctl enable ws
+    systemctl start ws
+    systemctl restart ws
+    
+    # Unduh file konfigurasi geosite dan geoip untuk xray
+    wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
+    wget -q -O /usr/local/share/xray/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat" >/dev/null 2>&1
+    
+    # Unduh dan pasang ftvpn
+    wget -O /usr/sbin/ftvpn "${REPO}files/ftvpn" >/dev/null 2>&1
+    chmod +x /usr/sbin/ftvpn
+    
+    # Setup iptables untuk blocking traffic terkait BitTorrent
+    iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "announce_peer" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "find_node" --algo bm -j DROP
+    iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
+    iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
+    iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
+    iptables -A FORWARD -m string --algo bm --string ".torrent" -j DROP
+    iptables -A FORWARD -m string --algo bm --string "announce.php?passkey=" -j DROP
+    iptables -A FORWARD -m string --algo bm --string "torrent" -j DROP
+    iptables -A FORWARD -m string --algo bm --string "announce" -j DROP
+    iptables -A FORWARD -m string --algo bm --string "info_hash" -j DROP
+    
+    # Menyimpan dan memuat kembali aturan iptables
+    iptables-save > /etc/iptables.up.rules
+    iptables-restore -t < /etc/iptables.up.rules
+    netfilter-persistent save
+    netfilter-persistent reload
+    
+    # Bersihkan cache dan hapus paket yang tidak digunakan
+    apt autoclean -y >/dev/null 2>&1
+    apt autoremove -y >/dev/null 2>&1
+
+    PRINT_SUCCES "ePro WebSocket Proxy"
+}
+
+function INSTALL_ENVIRONT(){
+    clear
+    PRINTF_INSTALL "Memasang Menu Packet"
+    wget ${REPO}feature/LUNATIX_sh
+    unzip LUNATIX_sh
+    chmod +x menu/*
+    mv menu/* /usr/local/sbin
+    rm -rf LUNATIX
+    rm -rf LUNATIX_sh
+
+    wget ${REPO}feature/LUNATIX_py
+    unzip LUNATIX_py
+    chmod +x menu/*
+    mv menu/* /usr/bin
+    rm -rf LUNATIX
+    rm -rf LUNATIX_sh
+    
+    # Menulis file .profile untuk root
+    cat >/root/.profile <<EOF
+if [ "\$BASH" ]; then
+    if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+    fi
 fi
 mesg n || true
-python3 /usr/bin/menu
+menu
 EOF
-cat >/etc/cron.d/xp_all <<-END
+
+    # Menulis konfigurasi cron untuk xp_all
+    cat >/etc/cron.d/xp_all <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 2 0 * * * root /usr/local/sbin/xp
 END
-cat >/etc/cron.d/logclean <<-END
+
+    # Menulis konfigurasi cron untuk logclean
+    cat >/etc/cron.d/logclean <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 */10 * * * * root /usr/local/sbin/clearlog
 END
-chmod 644 /root/.profile
-cat >/etc/cron.d/daily_reboot <<-END
+
+    # Memberikan izin akses pada file .profile
+    chmod 644 /root/.profile
+
+    # Menulis konfigurasi cron untuk daily_reboot
+    cat >/etc/cron.d/daily_reboot <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 5 * * * root /sbin/reboot
 END
-echo "*/1 * * * * root echo -n > /var/log/nginx/access.log" >/etc/cron.d/log.nginx
-echo "*/1 * * * * root echo -n > /var/log/xray/access.log" >>/etc/cron.d/log.xray
-service cron restart
-cat >/home/daily_reboot <<-END
+
+    # Menulis konfigurasi cron untuk membersihkan log nginx dan xray
+    echo "*/1 * * * * root echo -n > /var/log/nginx/access.log" >/etc/cron.d/log.nginx
+    echo "*/1 * * * * root echo -n > /var/log/xray/access.log" >>/etc/cron.d/log.xray
+
+    # Restart cron untuk menerapkan perubahan
+    service cron restart
+
+    # Menulis file /home/daily_reboot
+    cat >/home/daily_reboot <<-END
 5
 END
 
-
-
-cat >/etc/systemd/system/rc-local.service <<EOF
+    # Menulis konfigurasi systemd untuk rc-local
+    cat >/etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
 ConditionPathExists=/etc/rc.local
@@ -990,77 +1057,108 @@ SysVStartPriority=99
 WantedBy=multi-user.target
 EOF
 
-cat >/etc/rc.local <<EOF
+    # Menambahkan /bin/false dan /usr/sbin/nologin ke /etc/shells untuk membatasi akses
+    echo "/bin/false" >>/etc/shells
+    echo "/usr/sbin/nologin" >>/etc/shells
+
+    # Menulis file rc.local
+    cat >/etc/rc.local <<EOF
 iptables -I INPUT -p udp --dport 5300 -j ACCEPT
 iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
 systemctl restart netfilter-persistent
 exit 0
 EOF
+    chmod +x /etc/rc.local
 
-chmod +x /etc/rc.local
-echo "/bin/false" >>/etc/shells
-echo "/usr/sbin/nologin" >>/etc/shells
+    # Mengecek pengaturan auto-reboot
+    AUTOREB=$(cat /home/daily_reboot)
+    SETT=11
+    if [ $AUTOREB -gt $SETT ]; then
+        TIME_DATE="PM"
+    else
+        TIME_DATE="AM"
+    fi
 
-AUTOREB=$(cat /home/daily_reboot)
-SETT=11
-if [ $AUTOREB -gt $SETT ]; then
-TIME_DATE="PM"
-else
-TIME_DATE="AM"
-fi
-print_success "Menu Packet"
+    # Menampilkan pesan sukses
+    PRINT_SUCCES "Menu Packet"
 }
-function enable_services(){
-clear
 
-echo -e "\e[36;1minstall kill triall \e[0m"
-apt -y install at
-clear
-print_install "Enable Service"
-systemctl daemon-reload
-systemctl start netfilter-persistent
-systemctl enable --now rc-local
-systemctl enable --now cron
-systemctl enable --now netfilter-persistent
-systemctl restart rc-local
-systemctl restart nginx
-systemctl restart xray
-systemctl restart cron
-systemctl restart haproxy
-systemctl restart ssh
-systemctl restart ws
-systemctl restart atd
-print_success "Enable Service"
-clear
+function RESTART_SERVICE(){
+    clear
+    PRINTF_INSTALL "Restarting All Packet"
+    
+    # Restart berbagai layanan menggunakan init.d dan systemctl
+    /etc/init.d/nginx restart
+    /etc/init.d/openvpn restart
+    /etc/init.d/ssh restart
+    /etc/init.d/dropbear restart
+    /etc/init.d/fail2ban restart
+    /etc/init.d/vnstat restart
+    systemctl restart haproxy
+    /etc/init.d/cron restart
+    systemctl restart nginx
+    systemctl restart xray
+    systemctl restart cron
+    systemctl restart haproxy
+        
+    # Reload daemon systemd dan start layanan netfilter-persistent
+    systemctl daemon-reload
+    systemctl start netfilter-persistent
+    
+    # Enable layanan agar berjalan otomatis saat boot
+        
+    systemctl enable --now nginx
+    systemctl enable --now xray
+    systemctl enable --now rc-local
+    systemctl enable --now dropbear
+    systemctl enable --now openvpn
+    systemctl enable --now cron
+    systemctl enable --now haproxy
+    systemctl enable --now netfilter-persistent
+    systemctl enable --now ws
+    systemctl enable --now fail2ban
+    
+    # Bersihkan history terminal untuk menghindari kebocoran data
+    history -c
+    echo "unset HISTFILE" >> /etc/profile
+    
+    # Menghapus file konfigurasi yang mungkin sensitif
+    rm -f /root/openvpn
+    rm -f /root/key.pem
+    rm -f /root/cert.pem
+    
+    PRINT_SUCCES "All Packet"
 }
+
 function instal(){
-clear
-install_haproxy
-base_package
-make_folder_xray
-pasang_domain
-password_default
-pasang_ssl
-install_xray
-ssh
-udp_mini
-ssh_slow
-ins_SSHD
-ins_dropbear
-ins_vnstat
-ins_openvpn
-ins_backup
-ins_swab
-ins_Fail2ban
-ins_epro
-ins_restart
-menu
-profile
-enable_services
-restart_system
+    clear
+    PRINTF_INSTALL "Instalasi Dimulai"
+    INSTALL_HAPROXY
+    INSTALL_NGINX
+    INSTALL_TOOLS
+    INSTALL_FOLDER
+    INSTALL_DOMAIN
+    INSTALL_SSLCERT
+    INSTALL_XRAY
+    INSTALL_PASSWORD
+    INSTALL_BADVPN    
+    INSTALL_SSHD
+    INSTALL_DROPBEAR
+    INSTALL_VNSTAT
+    INSTALL_OPENVPN
+    INSTALL_RCLONE
+    INSTALL_SWAPP
+    INSTALL_FAIL2BAN
+    INSTALL_EPROWS
+    INSTALL_ENVIRONT
+    RESTART_SERVICE    
+    SEND_NOTIF
 }
+
+# Menjalankan fungsi instalasi
 instal
-echo ""
+
+# Menghapus file yang tidak diperlukan
 history -c
 rm -rf /root/menu
 rm -rf /root/*.zip
@@ -1068,10 +1166,27 @@ rm -rf /root/*.sh
 rm -rf /root/LICENSE
 rm -rf /root/README.md
 rm -rf /root/domain
+rm -rf /root/LUNATIX_sh
+rm -rf /root/LUNATIX_py
+rm -rf /root/snap
+rm -rf /root/udp-custom
+rm -rf /root/udp
+rm -rf /root/install.log
+
+# Menampilkan waktu yang dibutuhkan untuk instalasi
 secs_to_human "$(($(date +%s) - ${start}))"
+
+# Mengatur hostname server
 sudo hostnamectl set-hostname $username
-echo -e "${green} install sukses ${NC}"
-sleep 2
+
+# bersihkan terminal
+clear
+
+# Menampilkan pesan sukses
+echo -e "\e[31;1m ============================= \e[0m"
+echo -e "\e[36;1m        Install Sukses         \e[0m"
+echo -e "\e[31;1m ============================= \e[0m"
+# Memberi perintah untuk reboot
 echo ""
-read -p "$( echo -e "Press ${YELLOW}[ ${NC}${YELLOW}Enter${NC} ${YELLOW}]${NC} TO REBOOT") "
+read -p "$( echo -e "\e[97;1m type \e[96;1m'ENTER'\e[97;1m to reboot \e[0m") "
 reboot
