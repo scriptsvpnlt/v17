@@ -18,6 +18,37 @@ GIT_USER="scriptsvpnlt"
 GIT_REPO="v17"
 GIT_BRANCH="main/"
 REPO="https://raw.githubusercontent.com/${GIT_USER}/${GIT_REPO}/${GIT_BRANCH}"
+    clear
+    echo -e "   .--------------------------------------------."
+    echo -e "   | \e[1;32mSilakan Pilih Jenis Domain Di Bawah Ini \e[0m|"
+    echo -e "   '--------------------------------------------'"
+    echo -e "     \e[1;32m1)\e[0m Domain Pribadi"
+    echo -e "     \e[1;32m2)\e[0m Random Domain"
+    echo -e "   ------------------------------------"
+    read -p "   Pilih angka 1-2 untuk type domain: " SELECT_CHOICE
+    if [[ $SELECT_CHOICE == "1" ]]; then
+    clear
+    echo -e "${CY}========================================${Softex}"
+    echo -e "\033[41;97;1m            ADDON DOMAIN VPS           \033[0m"
+    echo -e "${CY}========================================${Softex}"
+        echo -e ""
+        read -p "   Masukkan domain Anda: " host1
+        
+        echo "IP=" > /var/lib/LT/ipvps.conf
+        echo "$host1" > /etc/xray/domain
+        echo "$host1" > /root/domain
+
+    elif [[ $SELECT_CHOICE == "2" ]]; then
+        echo -e "${CY}Menggunakan Random Domain...${Softex}"
+        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
+        rm -f /root/cf.sh
+        clear
+    else
+        echo -e "${RED}Input tidak valid, Random Domain akan digunakan.${Softex}"
+        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
+        rm -f /root/cf.sh
+        clear
+    fi
 
 # ==========================================
 # Fungsi Utama
@@ -56,7 +87,6 @@ SETUP_DIRECTORIES() {
     PRINTF_INSTALL "Setting up directories and permissions"
     mkdir -p /etc/xray /var/log/xray /var/lib/LT
     curl -s ifconfig.me > /etc/xray/ipvps
-    touch /etc/xray/domain
     chown www-data:www-data /var/log/xray
     chmod +x /var/log/xray
     touch /var/log/xray/access.log
@@ -206,43 +236,6 @@ function INSTALL_TOOLS() {
     chronyc tracking -v
 
     PRINT_SUCCES "Paket yang Dibutuhkan Telah Berhasil Diinstal"
-}
-
-function INSTALL_DOMAIN() {
-    clear
-    echo -e ""
-    echo -e "   .----------------------------------."
-    echo -e "   | \e[1;32mSilakan Pilih Jenis Domain Di Bawah Ini \e[0m|"
-    echo -e "   '----------------------------------'"
-    echo -e "     \e[1;32m1)\e[0m Domain Pribadi"
-    echo -e "     \e[1;32m2)\e[0m Random Domain"
-    echo -e "   ------------------------------------"
-    read -p "   Pilih angka 1-2 atau tombol lainnya untuk Random Domain: " host
-    echo ""
-
-    if [[ $host == "1" ]]; then
-    echo -e "${CY}=========================================${Softex}"
-    echo -e "\033[41;97;1m          ADDON DOMAIN VPS         \033[0m"
-    echo -e "${CY}=========================================${Softex}"
-        echo -e ""
-        read -p "   Masukkan domain Anda: " host1
-
-        echo "IP=" > /var/lib/LT/ipvps.conf
-        echo "$host1" > /etc/xray/domain
-        echo "$host1" > /root/domain
-        echo -e "${GRN}Domain berhasil diatur menjadi $host1 ${Softex}"
-        echo ""
-    elif [[ $host == "2" ]]; then
-        echo -e "${CY}Menggunakan Random Domain...${Softex}"
-        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
-        rm -f /root/cf.sh
-        clear
-    else
-        echo -e "${RED}Input tidak valid, Random Domain akan digunakan.${Softex}"
-        wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
-        rm -f /root/cf.sh
-        clear
-    fi
 }
 
 function SEND_NOTIF() {
@@ -1133,12 +1126,10 @@ function RESTART_SERVICE(){
 
 function instal(){
     clear
-    PRINTF_INSTALL "Instalasi Dimulai"
     INSTALL_HAPROXY
     INSTALL_NGINX
     INSTALL_TOOLS
     INSTALL_FOLDER
-    INSTALL_DOMAIN
     INSTALL_SSLCERT
     INSTALL_XRAY
     INSTALL_PASSWORD
