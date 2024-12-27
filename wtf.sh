@@ -435,19 +435,41 @@ function make_folder_xray() {
 function install_xray() {
 clear
 print_install "Core Xray 1.8.1 Latest Version"
-domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
-chown www-data.www-data $domainSock_dir
+
+# Buat direktori domain socket jika belum ada
+domainSock_dir="/run/xray"
+if [ ! -d "$domainSock_dir" ]; then
+    mkdir -p "$domainSock_dir"
+fi
+chown www-data:www-data "$domainSock_dir"
+
+# Ambil versi terbaru dari Xray Core
 latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version $latest_version
+
+# Unduh dan instal Xray Core dengan versi terbaru
+bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version "$latest_version"
+
+# Unduh file konfigurasi
 wget -O /etc/xray/config.json "${REPO}cfg_conf_js/config.json" >/dev/null 2>&1
 wget -O /etc/systemd/system/runn.service "${REPO}files/runn.service" >/dev/null 2>&1
+
+# Baca domain dan IP dari file konfigurasi
 domain=$(cat /etc/xray/domain)
 IPVS=$(cat /etc/xray/ipvps)
-print_success "Core Xray 1.8.1 Latest Version"
+
+# Cetak pesan sukses
+print_success "Core Xray 1.8.1 Latest Version Installed"
+
+# Bersihkan layar
 clear
-curl -s ipinfo.io/city >>/etc/xray/city
-curl -s ipinfo.io/org | cut -d " " -f 2-10 >>/etc/xray/isp
+
+# Ambil informasi lokasi dan ISP
+curl -s ipinfo.io/city >/etc/xray/city
+curl -s ipinfo.io/org | cut -d " " -f 2-10 >/etc/xray/isp
+
+# Cetak pesan instalasi paket selesai
 print_install "Memasang Konfigurasi Packet"
+
 #wget -O /etc/haproxy/haproxy.cfg "${REPO}cfg_conf_js/haproxy.cfg" >/dev/null 2>&1
 
 # Fungsi untuk mengunduh konfigurasi
