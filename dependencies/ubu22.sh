@@ -17,9 +17,6 @@ python3.12-minimal python3.12 python3 snapd software-properties-common sosreport
 )
 
 # Instalasi paket berdasarkan OS
-if [[ $OS_NAME == *"Ubuntu"* || $OS_NAME == *"Debian"* ]]; then
-    sudo apt update
+    sudo apt update -y
+    sudo apt upgrade -y
     sudo apt install -y "${PACKAGES[@]}"
-else
-    echo "Sistem operasi tidak didukung."
-fi
