@@ -65,45 +65,48 @@ SETUP_DIRECTORIES() {
 }
 
 ADDED_DOMAINS() {
+CY='\033[1;36m'
+RED='\033[1;31m'
+Softex='\033[0m'
+
+# Menambahkan mode otomatis
+DEFAULT_SELECTION=2  # Pilihan default (gunakan Random Domain jika tidak ada input)
+
+echo -e "   ==========================================="
+echo -e "       Please Select a Domain bellow type."
+echo -e "   ==========================================="
+echo -e "     1).  Domain Pribadi"
+echo -e "     2).  Domain Random"
+echo -e "   ==========================================="
+
+# Membaca input dengan timeout selama 40 detik
+read -t 40 -p "   Pilih angka (1-2) untuk tipe domain (Default: $DEFAULT_SELECTION): " SELECT_CHOICE
+
+# Menggunakan nilai default jika input kosong
+SELECT_CHOICE=${SELECT_CHOICE:-$DEFAULT_SELECTION}
+
+if [[ "$SELECT_CHOICE" == "1" ]]; then
     clear
-    echo -e "   \e[97;1m ===========================================\e[0m"
-    echo -e "   \e[1;32m    Please Select a Domain bellow type.     \e[0m"
-    echo -e "   \e[97;1m ===========================================\e[0m"
-    echo -e "   \e[1;32m  1). \e[97;1m Domain Pribadi \e[0m"
-    echo -e "   \e[1;32m  2). \e[97;1m Domain Random  \e[0m"
-    echo -e "   \e[97;1m ===========================================\e[0m"
-    echo -e ""
-    read -p "   Just Input a number [1-2]:   " host
+    echo -e "${CY}========================================${Softex}"
+    echo -e "\033[41;97;1m            ADDON DOMAIN VPS           \033[0m"
+    echo -e "${CY}========================================${Softex}"
     echo ""
-    if [[ $host == "1" ]]; then
-        clear
-        echo -e "   \e[97;1m ===========================================\e[0m"
-        echo -e "   \e[97;1m             INPUT YOUR DOMAIN              \e[0m"
-        echo -e "   \e[97;1m ===========================================\e[0m"
-        echo -e ""
-        read -p "   Input your domain:   " host1
-        if [[ -z "$host1" ]]; then
-            PRINT_FAILURE "Domain cannot be empty. Please input a valid domain."
-            exit 1
-        fi
-        echo "IP=" >> /var/lib/LT/ipvps.conf
-        echo $host1 > /etc/xray/domain
-        echo $host1 > /root/domain
-        echo ""
-    elif [[ $host == "2" ]]; then
-        wget ${REPO}files/cf.sh -O cf.sh
-        if [[ ! -f "cf.sh" ]]; then
-            PRINT_FAILURE "Failed to download cf.sh. Exiting..."
-            exit 1
-        fi
-        chmod +x cf.sh
-        ./cf.sh
-        rm -f cf.sh
-        clear
-    else
-        PRINT_FAILURE "Invalid selection. Please choose either 1 or 2."
-        exit 1
-    fi
+    read -p "   Masukkan domain Anda: " host1
+
+    mkdir -p /var/lib/LT
+    echo "IP=" > /var/lib/LT/ipvps.conf
+    echo "$host1" > /etc/xray/domain
+    echo "$host1" > /root/domain
+    echo -e "${CY}Domain $host1 berhasil disimpan.${Softex}"
+elif [[ "$SELECT_CHOICE" == "2" ]]; then
+    echo -e "${CY}Menggunakan Random Domain...${Softex}"
+    wget -q "${REPO}files/cf.sh" -O cf.sh && chmod +x cf.sh && ./cf.sh
+    rm -f cf.sh
+else
+    echo -e "${RED}[EROR] Invalid selection. Please choose either 1 or 2.${Softex}"
+    exit 1
+fi
+
 }
 
 FETCH_USER_INFO() {
