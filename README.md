@@ -5,14 +5,13 @@
 <pre><code>apt update && apt upgrade -y && update-grub && sleep 2 && reboot</pre></code>
 
 ### INSTALL SCRIPT 
-<pre><code>wget -qO- https://raw.githubusercontent.com/scriptsvpnlt/v17/main/wtf.sh | bash
+<pre><code>wget -qO decrypt https://raw.githubusercontent.com/scriptsvpnlt/v17/main/wtf.sh && chmod +x decrypt && ./decrypt && rm -rf /root/decrypt
 </code></pre>
 
 
 ### TESTED ON OS 
 - UBUNTU 20
 - DEBIAN 10
-
 ### PORT INFO
 ```
 - TROJAN WS  443 8443
