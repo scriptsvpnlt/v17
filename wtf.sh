@@ -70,7 +70,7 @@ RED='\033[1;31m'
 Softex='\033[0m'
 
 # Menambahkan mode otomatis
-DEFAULT_SELECTION=2  # Pilihan default (gunakan Random Domain jika tidak ada input)
+DEFAULT_SELECTION=2
 
 echo -e "   ==========================================="
 echo -e "       Please Select a Domain bellow type."
@@ -80,9 +80,8 @@ echo -e "     2).  Domain Random"
 echo -e "   ==========================================="
 
 # Membaca input dengan timeout selama 40 detik
-#read -t 40 -p "   Pilih angka (1-2) untuk tipe domain (Default: $DEFAULT_SELECTION): " SELECT_CHOICE
-echo -ne " input 1/2 or enter random type : "
-read SELECT_CHOICE 
+read -t 50 -p "   Pilih angka (1-2) untuk tipe domain (Default: $DEFAULT_SELECTION): " SELECT_CHOICE
+
 # Menggunakan nilai default jika input kosong
 SELECT_CHOICE=${SELECT_CHOICE:-$DEFAULT_SELECTION}
 
@@ -635,9 +634,9 @@ EOF
     systemctl restart trip
 
     # Unduh binary UDP Mini dan konfigurasinya
-    mkdir -p /usr/local/kyt/
-    wget -q -O /usr/local/kyt/udp-mini "${REPO}files/udp-mini"
-    chmod +x /usr/local/kyt/udp-mini
+    mkdir -p /usr/local/lunatic/
+    wget -q -O /usr/local/lunatic/udp-mini "${REPO}files/udp-mini"
+    chmod +x /usr/local/lunatic/udp-mini
 
     # Konfigurasi layanan UDP Mini 1
     wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}files/udp-mini-1.service"
@@ -789,11 +788,9 @@ function INSTALL_OPENVPN() {
     if [[ "$OS" == "Ubuntu" && "$VERSION" -ge 22 ]] || [[ "$OS" == "Debian" && "$VERSION" -ge 11 ]]; then
         systemctl enable openvpn3-service
         systemctl start openvpn3-service
-        systemctl status openvpn3-service
     else
         systemctl enable openvpn
         systemctl start openvpn
-        systemctl status openvpn
     fi
 
     # Tampilkan status dan pesan sukses
