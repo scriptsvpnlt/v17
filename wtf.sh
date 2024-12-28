@@ -80,8 +80,9 @@ echo -e "     2).  Domain Random"
 echo -e "   ==========================================="
 
 # Membaca input dengan timeout selama 40 detik
-read -t 40 -p "   Pilih angka (1-2) untuk tipe domain (Default: $DEFAULT_SELECTION): " SELECT_CHOICE
-
+#read -t 40 -p "   Pilih angka (1-2) untuk tipe domain (Default: $DEFAULT_SELECTION): " SELECT_CHOICE
+echo -ne " input 1/2 or enter random type : "
+read SELECT_CHOICE 
 # Menggunakan nilai default jika input kosong
 SELECT_CHOICE=${SELECT_CHOICE:-$DEFAULT_SELECTION}
 
